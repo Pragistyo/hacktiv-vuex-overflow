@@ -23,8 +23,7 @@ class userController {
   }
 
   static userInfo (req,res) {
-    // res.send(req.locals)
-    res.send('hana athiyyah')
+    res.send(req.locals)
   }
 
   static register (req,res) {

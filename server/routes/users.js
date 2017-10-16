@@ -10,7 +10,7 @@ console.log('============masuk');
 //   res.send('respond with a resource');
 // });
 
-// router.get('/', usersController.index)
+router.get('/', usersController.all)
 router.get('/info', jwt.isLogin, usersController.userInfo)
 router.post('/', usersController.register)
 router.delete('/', usersController.remove)

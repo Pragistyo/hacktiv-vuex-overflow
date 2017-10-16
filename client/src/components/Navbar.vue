@@ -1,23 +1,24 @@
 <template>
   <div>
-    <div class="ui large menu">
-  <a class="active item">
-    Home
-  </a>
-  <a class="item">
-    Messages
-  </a>
-  <div class="right menu">
-    <div class="item">
-        <div class="ui primary button">Sign In</div>
-    </div>
-    <div class="item">
-        <div class="ui primary button">Sign Up</div>
-    </div>
-    </div>
-  </div>
-      <Login />
-      <Signup />
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+            <span class="sr-only">Toggle navigation</span>
+          </button>
+          <a class="navbar-brand" href="#">Home</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a class="user" data-toggle="modal" data-target="#myModalSignin">Sign In</a></li>
+            <li><a class="user" data-toggle="modal" data-target="#myModalSignout">Sign Up</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <Login id="myModalSignin" class="modal fade" role="dialog"></login>
+    <Signup id="myModalSignout"  class="modal fade" role="dialog"></Signup>
   </div>
 </template>
 
@@ -33,4 +34,7 @@ export default {
 </script>
 
 <style>
+a:hover{
+  cursor:pointer;
+}
 </style>

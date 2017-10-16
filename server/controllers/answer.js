@@ -9,7 +9,7 @@ class answerController {
 
   static findById (req,res) {
     if(req.body.id_question) {
-      answer.find({id_user:req.body.id,id_question:req.body.id_question})
+      answer.find({id_user:req.locals.id,id_question:req.body.id_question})
       .populate('id_user')
       .populate('id_question','_id title content')
       .then(result=>{
@@ -33,7 +33,7 @@ class answerController {
 
   static add (req,res) {
     answer.create({
-      id_user:req.body.id,
+      id_user:req.locals.id,
       id_question:req.body.id_question,
       content: req.body.content
     })

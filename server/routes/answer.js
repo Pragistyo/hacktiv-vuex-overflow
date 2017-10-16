@@ -9,7 +9,7 @@ const answerController = require('../controllers/answer')
 
 router.get('/',jwt.isLogin, answerController.findById)
 router.post('/', jwt.isLogin, answerController.add)
-router.delete('/',jwt.isLogin, answerController.remove)
+router.delete('/:id',jwt.isLogin, answerController.remove)
 
 // voted route
 router.post('/voteup', jwt.isLogin, answerController.voteUp)

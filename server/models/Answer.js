@@ -10,9 +10,9 @@ const answerSchema = new Schema({
 },
 {timestamp:true})
 
-var Answers = mongoose.model('answer', answerSchema);
+var Answer = mongoose.model('answer', answerSchema);
 
-module.exports = Answers
+module.exports = Answer
 
 
 // id_answer

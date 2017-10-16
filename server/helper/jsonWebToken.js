@@ -4,7 +4,7 @@ require('dotenv').config()
 
   function isLogin(req,res,next){
     // console.log('============helper');
-    jwt.verify(req.body.token, process.env.SECRET_KEY,(err,decoded)=>{
+    jwt.verify(req.headers.token, process.env.SECRET_KEY,(err,decoded)=>{
       if(!err){
       // res.send(decoded)
       req.locals = decoded
