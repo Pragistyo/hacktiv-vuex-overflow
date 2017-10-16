@@ -17,7 +17,7 @@ class questionController {
     })
   }
   static findById (req,res) {
-    question.find({id_user:req.body.id})
+    question.find({id_user:req.locals.id})
     .populate('id_user','_id username email')
     .populate('answer')
     .then(result=>{
@@ -42,7 +42,7 @@ class questionController {
 
   static create (req,res) {
     question.create({
-      id_user:req.body.id,
+      id_user:req.locals.id,
       title: req.body.title,
       content: req.body.content
     })
@@ -54,14 +54,15 @@ class questionController {
     })
   }
   static edit (req,res) {
-    question.updateOne(
-      {_id:req.body.id_question,id_user:req.body.id},
+    question.findOneAndUpdate(
+      {_id:req.body.id_question,id_user:req.locals.id},
       {
         $set:{title:req.body.title,content:req.body.content,updatedAt:new Date()}
       }
     )
     .then(result=>{
       res.send(result)
+      // res.send('ok')
     })
     .catch(err=>{
       res.send(err)
@@ -79,7 +80,7 @@ class questionController {
 
   static answer (req,res) {
     answer.create({
-        id_user: req.body.id,
+        id_user: req.locals.id,
         id_question: req.body.id_question,
         content: req.body.content
     })

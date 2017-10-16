@@ -1,33 +1,32 @@
 <template>
   <div>
-    <form v-on:submit.prevent="userLogin">
+    <form v-on:submit.prevent="userSignup">
       <input v-model="form.username" type="text" placeholder="username">
       <input v-model="form.password" type="password" placeholder="password">
-      <button>Login</button>
+      <input v-model="form.name" type="text" placeholder="name">
+      <button>Register</button>
     </form>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 export default {
   data () {
     return {
       form: {
         username: '',
-        password: ''
+        password: '',
+        name: ''
       }
     }
   },
   methods: {
-    ...mapState({
-      data: 'login'
-    }),
     ...mapActions([
-      'login'
+      'signup'
     ]),
-    userLogin () {
-      this.login(this.form)
+    userSignup () {
+      this.signup(this.form)
     }
   }
 }
