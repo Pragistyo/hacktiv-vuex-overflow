@@ -41,7 +41,7 @@ class questionController {
 
 
   static create (req,res) {
-    console.log('BLABLA');
+    // console.log('BLABLA');
     question.create({
       id_user:req.locals.id,
       title: req.body.title,
@@ -51,7 +51,8 @@ class questionController {
       res.send(result)
     })
     .catch(err=>{
-      res.send('err')
+      console.log('error create ======== BLABLA ' + err.ValidationError);
+      res.send(err)
     })
   }
   static edit (req,res) {

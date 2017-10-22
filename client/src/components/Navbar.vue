@@ -8,8 +8,9 @@
             </button>
               <ul class="nav navbar-nav navbar-right">
                   <li>
-                      <router-link to="/" 
-                      class="navbar-brand"
+                      <router-link 
+                      to="/" 
+                      class=""
                       @click.native=" $emit('showHome')"
                       ><p>HOME</p>
                       </router-link>
@@ -17,7 +18,7 @@
                   <li>
                     <router-link 
                     v-if="dataLogin.status" 
-                    :to="userData.id"
+                    :to="userData.username"
                     @click.native=" $emit('showUserQuestion')"
                     ><p>YOUR QUESTION</p>
                     </router-link>
@@ -31,10 +32,10 @@
           </div>
           <ul class="nav navbar-nav navbar-right">
             <li>
-              <a @click="$emit('openLogin')" v-if="!dataLogin.status">Sign In</a>
+              <a @click="$emit('openLogin')" v-if="!dataLogin.status">SIGN IN</a>
             </li>
             <li>
-              <a @click="$emit('openSignUp')" v-if="!dataLogin.status">Sign Up</a>
+              <a @click="$emit('openSignUp')" v-if="!dataLogin.status">SIGN UP</a>
             </li>
             <li>
               <a @click="logout()" v-if="dataLogin.status">Logout</a>
@@ -48,7 +49,7 @@
 <script>
 import Login from '@/components/Login'
 import Signup from '@/components/Signup'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 export default {
   data () {
     return {
@@ -68,6 +69,9 @@ export default {
     })
   },
   methods: {
+    ...mapActions([
+      'checkLogin'
+    ]),
     logout () {
       var self = this
       self.dataLogin.status = false
@@ -77,10 +81,9 @@ export default {
       localStorage.clear()
       this.$router.push('/')
       this.$emit('showHome')
-    },
-    home () {
-      this.$router.push('/')
     }
+  },
+  mounted: function () {
   }
 }
 </script>

@@ -51,7 +51,7 @@ export default {
       'login'
     ]),
     userLogin () {
-      alert(JSON.stringify(this.form) + ' ================')
+      // alert(JSON.stringify(this.form) + ' ================')
       this.login(this.form)
       // this.$root.$router.push('/')
       this.$emit('closeLogin')

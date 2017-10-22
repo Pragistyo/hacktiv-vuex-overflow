@@ -15,6 +15,13 @@ const state = {
     id: null,
     username: null
   },
+  formEdit: {
+    title: null,
+    content: null,
+    userId: null,
+    questionId: null,
+    fromRouter: null
+  },
   userQuestion: null,
   signup: ''
 }
@@ -34,6 +41,7 @@ const mutations = {
   setPostData (state, payload) {
     payload.id_user = [{'_id': payload.id_user[0], 'username': state.userData.username}]
     state.question.push(payload)
+    alert('You post a Question')
   },
   setLogin (state, payload) {
     console.log('ini payload' + JSON.stringify(payload.objToken))
@@ -88,12 +96,16 @@ const actions = {
       }
     })
     .then(data => {
+      if (data.data.errors) {
+        alert(JSON.stringify('Please fill all the fields'))
+      } else if (data.data.name === 'JsonWebTokenError') {
+        alert(JSON.stringify('PLEASE SIGN IN'))
+      }
       console.log('ini data', data.data)
       commit('setPostData', data.data)
     })
     .catch(err => {
-      alert('Please Login')
-      console.log(err)
+      console.log(err + ' ============')
     })
   },
   postAnswer ({ commit }, payload) {
@@ -161,18 +173,38 @@ const actions = {
       }
     })
       .then(result => { // hasilnya data user
-        commit('setLogin', { objToken: {token: localStorage.token}, objUser: result.data })
+        if (result.data.id) {
+          commit('setLogin', { objToken: {token: localStorage.token}, objUser: result.data })
+        }
       })
       .catch(err => {
         alert('Error get user INFO')
         console.log(err)
       })
   },
-  updateData () {
+  updateData ({commit}, payload) {
+    axios.put(`http://localhost:3000/question/`, {
+      id: payload.userId,
+      id_question: payload.questionId,
+      title: payload.title,
+      content: payload.content
+    }, {
+      headers: {
+        token: localStorage.getItem('token')
+      }
+    })
+    .then(result => {
+      console.log(result.data)
+      alert('Your Question Successfully updated')
+      // commit('set', result.data)
+    })
+    .catch(err => {
+      console.log('INI ERROR >> ' + err)
+    })
   },
   deleteData ({commit}, payload) {
-    alert('masuk delete data' + JSON.stringify(payload[0]))
-    alert('masuk delete data2' + JSON.stringify(payload[1]))
+    // alert('masuk delete data' + JSON.stringify(payload[0]))
+    // alert('masuk delete data2' + JSON.stringify(payload[1]))
     axios({
       method: 'delete',
       url: `http://localhost:3000/question/`,
@@ -182,14 +214,6 @@ const actions = {
         id_question: payload[1]
       }
     })
-    // axios.delete(`http://localhost:3000/question/`, {
-    //   headers: {
-    //     'token': localStorage.getItem('token')
-    //   }
-    // }, {
-    //   id: payload[0],
-    //   id_question: payload[1]
-    // })
     .then(data => {
       alert('delete data >> ' + JSON.stringify(data))
       console.log('ini data', data.data)
@@ -208,6 +232,3 @@ const store = new Vuex.Store({
 })
 
 export default store
-
-// id: 'blabla',
-//   id_question: payload2

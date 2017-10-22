@@ -20,4 +20,8 @@ export default {
   color: #2c3e50;
   /*margin-top: 60px;*/
 }
+body {
+  background-image: url("/static/gradient1.png");
+  background-size: 100%
+}
 </style>

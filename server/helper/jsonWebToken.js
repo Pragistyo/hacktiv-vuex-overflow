@@ -12,7 +12,7 @@ require('dotenv').config()
         next()
       }
       else{
-          // console.log(err)
+          console.log(err)
           res.send(err)
       }
     })
