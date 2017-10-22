@@ -5,10 +5,6 @@ const jwt = require('../helper/jsonWebToken');
 const usersController = require('../controllers/user')
 
 console.log('============masuk');
-/* GET users listing. */
-// router.get('/', function(req, res, next) {
-//   res.send('respond with a resource');
-// });
 
 router.get('/', usersController.all)
 router.get('/info', jwt.isLogin, usersController.userInfo)

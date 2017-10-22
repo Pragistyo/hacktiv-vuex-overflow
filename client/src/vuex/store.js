@@ -5,12 +5,21 @@ import axios from 'axios'
 vue.use(Vuex)
 
 const state = {
-  question: '',
+  question: [],
   questionDetail: [],
-  loginStatus: '',
+  loginStatus: {
+    status: false,
+    token: null
+  },
+  userData: {
+    id: null,
+    username: null
+  },
+  userQuestion: null,
   signup: ''
 }
 
+// MUTATIONS
 const mutations = {
   setGetData (state, payload) {
     state.question = payload
@@ -19,12 +28,27 @@ const mutations = {
   setDetailQuestion (state, payload) {
     state.questionDetail = payload
   },
+  setUserQuestion (state, payload) {
+    state.userQuestion = payload
+  },
   setPostData (state, payload) {
+    payload.id_user = [{'_id': payload.id_user[0], 'username': state.userData.username}]
     state.question.push(payload)
   },
   setLogin (state, payload) {
-    // alert('ini payload' + JSON.stringify(payload))
-    state.loginStatus = payload
+    console.log('ini payload' + JSON.stringify(payload.objToken))
+    if (typeof payload.objToken === 'object') {
+      state.loginStatus = {
+        status: true,
+        token: payload.objToken.token
+      }
+      state.userData = {
+        id: payload.objUser.id,
+        username: payload.objUser.username
+      }
+    } else {
+      alert(payload.objToken)
+    }
   },
   setSignup (state, payload) {
     state.signup = payload
@@ -33,6 +57,8 @@ const mutations = {
     state.questionDetail = payload
   }
 }
+
+// ACTIONS
 const actions = {
   getData ({ commit }) {
     axios.get('http://localhost:3000/question/all')
@@ -41,16 +67,21 @@ const actions = {
       commit('setGetData', data.data)
     })
   },
-  getDetails ({ commit }, payload) {
-    axios.patch(`http://localhost:3000/question/${payload}`)
+  getUserQuestion ({ commit }, payload) {
+    axios.get(`http://localhost:3000/question/userData/${payload}`, {
+      headers: {
+        token: localStorage.getItem('token')
+      }
+    })
     .then(data => {
-      commit('setDetailQuestion', data.data)
+      commit('setUserQuestion', data.data)
     })
   },
   postData ({ commit }, payload) {
-    axios.post('http://localhost:3000/question', {
+    console.log('masuk post data ======')
+    axios.post(`http://localhost:3000/question/`, {
       title: payload.title,
-      question: payload.question
+      content: payload.content
     }, {
       headers: {
         token: localStorage.getItem('token')
@@ -59,6 +90,10 @@ const actions = {
     .then(data => {
       console.log('ini data', data.data)
       commit('setPostData', data.data)
+    })
+    .catch(err => {
+      alert('Please Login')
+      console.log(err)
     })
   },
   postAnswer ({ commit }, payload) {
@@ -81,10 +116,23 @@ const actions = {
       password: payload.password
     })
     .then(response => {
-      commit('setLogin', response.data)
-      alert('setLogin' + JSON.stringify(response.data))
-      console.log('ini response ', response.data.token)
+      console.log('ini response login ', response.data.token)
       localStorage.setItem('token', response.data.token)
+      axios.get('http://localhost:3000/users/info', {
+        headers: {
+          token: response.data.token
+        }
+      })
+      .then(result => {
+        if (result.data.username) {
+          alert('Welcome: ' + result.data.username)
+        }
+        commit('setLogin', {objToken: response.data, objUser: result.data})
+      })
+      .catch(err => {
+        alert('Error get user INFO')
+        console.log(err)
+      })
     })
     .catch(err => {
       console.log(err)
@@ -97,10 +145,57 @@ const actions = {
       email: payload.email
     })
     .then(response => {
-      alert('blabla' + JSON.stringify(response.data))
       commit('setSignup', response.data)
     })
     .catch(err => {
+      console.log(err)
+    })
+  },
+  checkLogin ({ commit }, payload) {
+    // ambil token dari localstorage
+    // verify kebelakang ke users/info, dapet data user, lempar ke state
+    // if localStorage.token ada
+    axios.get('http://localhost:3000/users/info', {
+      headers: {
+        token: localStorage.token
+      }
+    })
+      .then(result => { // hasilnya data user
+        commit('setLogin', { objToken: {token: localStorage.token}, objUser: result.data })
+      })
+      .catch(err => {
+        alert('Error get user INFO')
+        console.log(err)
+      })
+  },
+  updateData () {
+  },
+  deleteData ({commit}, payload) {
+    alert('masuk delete data' + JSON.stringify(payload[0]))
+    alert('masuk delete data2' + JSON.stringify(payload[1]))
+    axios({
+      method: 'delete',
+      url: `http://localhost:3000/question/`,
+      headers: {'token': localStorage.getItem('token')},
+      data: {
+        id: payload[0],
+        id_question: payload[1]
+      }
+    })
+    // axios.delete(`http://localhost:3000/question/`, {
+    //   headers: {
+    //     'token': localStorage.getItem('token')
+    //   }
+    // }, {
+    //   id: payload[0],
+    //   id_question: payload[1]
+    // })
+    .then(data => {
+      alert('delete data >> ' + JSON.stringify(data))
+      console.log('ini data', data.data)
+    })
+    .catch(err => {
+      alert('Failed to remove data form database')
       console.log(err)
     })
   }
@@ -113,3 +208,6 @@ const store = new Vuex.Store({
 })
 
 export default store
+
+// id: 'blabla',
+//   id_question: payload2

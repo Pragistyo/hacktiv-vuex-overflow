@@ -8,7 +8,7 @@ const answerSchema = new Schema({
   vote_up: [{type: Schema.ObjectId, ref: 'user'}],
   vote_down: [{type: Schema.ObjectId, ref: 'user'}]
 },
-{timestamp:true})
+{timestamps:true})
 
 var Answer = mongoose.model('answer', answerSchema);
 

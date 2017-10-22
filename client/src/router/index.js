@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Login from '@/components/Login'
+import SignUp from '@/components/Signup'
 import Home from '@/components/Home'
-import QuestionDetail from '@/components/QuestionDetail'
 import Question from '@/components/Question'
+// import QuestionDetail from '@/components/QuestionDetail'
 
 Vue.use(Router)
 
@@ -14,17 +16,22 @@ export default new Router({
       component: Home,
       children: [
         {
-          path: '',
-          name: 'Question',
-          component: Question
-        },
-        {
           path: ':id',
-          name: 'QuestionDetail',
-          component: QuestionDetail,
+          name: 'QuestionUser',
+          component: Question,
           props: true
         }
       ]
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login
+    },
+    {
+      path: '/signup',
+      name: 'Signup',
+      component: SignUp
     }
   ]
 })

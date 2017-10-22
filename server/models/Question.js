@@ -9,7 +9,7 @@ const questionSchema = new Schema({
   vote_up: [{type: Schema.ObjectId, ref: 'user'}],
   vote_down: [{type: Schema.ObjectId, ref: 'user'}],
 },
-{timestamp:true})
+{timestamps:true})
 
 var Questions = mongoose.model('question', questionSchema);
 

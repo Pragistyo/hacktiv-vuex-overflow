@@ -23,6 +23,7 @@ class userController {
   }
 
   static userInfo (req,res) {
+    console.log('============= user info' );
     res.send(req.locals)
   }
 
@@ -90,23 +91,22 @@ class userController {
         // res.send(token)
         res.send({token:token,msg:'berhasil'})
       }else{
-        res.status(401).send({
-          status:401,
-          err:{
-            msg:'password salah'
-          }
-        })
+        res.send(
+          'password salah'
+        )
       }
     })
     .catch(err=>{
-      res.send(err)
+      res.send('username does not exist')
     })
   }
 
-  static verify (req,res) {
+  static verify (req,res,next) {
     jwt.verify(req.body.token, process.env.SECRET_KEY,(err,decoded)=>{
       if(!err){
-        res.send(decoded)
+        // res.send(decoded)
+        req.locals = decoded
+        next()
       }
       else{
         console.log(err)

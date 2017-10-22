@@ -1,9 +1,7 @@
 <template>
-<div>
-  <legend><h1 class="title" style="color:teal">User Question :</h1></legend>
-  <!-- <p>{{userQuestion}}</p> -->
-  <div>
-        <div v-for="(item,index) in userQuestion" :key="">
+    <div>
+      <!-- {{getAllQuestion}} -->
+        <div v-for="(item,index) in getAllQuestion" :key="item._id">
             <div class="panel panel-warning">
                 <h1>{{item.title}}</h1>
                 <legend><h2>Author:  {{item.id_user[0].username}}</h2></legend>
@@ -13,52 +11,51 @@
                 class="btn btn-info">
                 EDIT
                 </button>
+                {{item.id_user[0]._id}}<br>
+                {{item._id}}
                 <button 
                 v-if = "userData.id == item.id_user[0]._id"
-                class="btn btn-danger">
+                class="btn btn-danger"
+                @click="deleteQuestion(index,item.id_user[0]._id,item._id)">
                 DELETE
                 </button>
             </div>
         </div>
     </div>
-  <div>
-
-  </div>
-</div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import {mapState, mapActions} from 'vuex'
 export default {
   data () {
     return {
-      form: {
-        title: '',
-        question: ''
-      }
-    }
-  },
-  methods: {
-    ...mapActions([
-      'getUserQuestion',
-      'postData'
-    ]),
-    post () {
-      this.postData(this.form)
     }
   },
   computed: {
     ...mapState({
-      userQuestion: 'userQuestion',
+      getAllQuestion: 'question',
       userData: 'userData'
     })
   },
+  methods: {
+    ...mapActions([
+      'getData',
+      'updateData',
+      'deleteData'
+    ]),
+    deleteQuestion (index, userId, questionId) {
+      // alert('========= ' + userId)
+      this.deleteData([userId, questionId])
+      this.getAllQuestion.splice(index, 1)
+    }
+  },
   mounted: function () {
-    // alert(JSON.stringify(this.userData.id))
-    this.getUserQuestion(this.userData.id)
+    this.getData()
   }
 }
 </script>
 <style>
+
 </style>
+
 
