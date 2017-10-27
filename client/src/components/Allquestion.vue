@@ -5,11 +5,11 @@
              v-for="(item,index) in getAllQuestion" :key="item._id" >
             <div class="panel panel-primary">
               <div class="panel-heading">
-                <h1>{{item.title}}</h1>
+                <h2>{{item.title}}</h2>
               </div>
               <div class="panel-body">
                   <div>
-                    <legend><h2>Author:  {{item.id_user[0].username}}</h2></legend>
+                    <legend><h3>Author:  {{item.id_user[0].username}}</h3></legend>
                   </div>
                   <div>
                     <p>{{item.content}}</p>
@@ -33,9 +33,14 @@
                     @click="deleteQuestion(index,item.id_user[0]._id,item._id)">
                     DELETE
                     </button>
-                    <button class="btn btn-primary fa fa-reply">
-                    ANSWER: {{item.answer.length}}</button>
-                    <button class="btn btn-success fa fa-list-alt"> SEE DETAIL</button>
+                    <router-link to="/answer">
+                      <button 
+                      @click="answerQuestion(item,index)"
+                      class="btn btn-primary fa fa-reply">
+                      ANSWER: {{item.answer.length}}
+                      </button>
+                    </router-link>
+                    <!-- <button class="btn btn-success fa fa-list-alt"> SEE DETAIL</button> -->
                   </div>
               </div>
             </div>
@@ -54,7 +59,8 @@ export default {
     ...mapState({
       getAllQuestion: 'question',
       userData: 'userData',
-      formEdit: 'formEdit'
+      formEdit: 'formEdit',
+      formAns: 'formAnswer'
     })
   },
   methods: {
@@ -69,14 +75,23 @@ export default {
     },
     updateQuestion (objQuestion, index, userId, questionId) {
       alert('masuk update')
-      // alert(JSON.stringify(objQuestion))
       this.formEdit.title = objQuestion.title
       this.formEdit.content = objQuestion.content
       this.formEdit.userId = userId
       this.formEdit.questionId = questionId
       this.formEdit.fromRouter = '/'
-      // this.$emit('showEdit')
-      // this.updateData([objQuestion, index, userId, questionId])
+    },
+    answerQuestion (objQuestion, index) {
+      // this.$swal(JSON.stringify(objQuestion))
+      alert(JSON.stringify(objQuestion))
+      this.formEdit.title = objQuestion.title
+      this.formEdit.content = objQuestion.content
+      this.formEdit.userId = objQuestion.id_user
+      this.formEdit.questionId = objQuestion._id
+      this.formAns.userId = objQuestion.id_user
+      this.formAns.questionId = objQuestion._id
+      this.formAns.fromRouter = '/'
+      alert(JSON.stringify(this.formAns))
     }
   },
   mounted: function () {
@@ -84,10 +99,16 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .panel-body {
   /* background-image: url('/static/gradient2.png'); */
   background-color: white
+}
+.panel-heading {
+  padding: 1px 0px 0px 0px;
+}
+h2, h3 {
+  margin-top: 10px;
 }
 </style>
 

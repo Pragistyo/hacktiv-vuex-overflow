@@ -7,9 +7,13 @@ const jwt = require('../helper/jsonWebToken');
 // require question controllers
 const answerController = require('../controllers/answer')
 
-router.get('/',jwt.isLogin, answerController.findById)
+router.get('/all', answerController.alls)
+router.get('/find/:id_question', answerController.findByIdQuestion) //ga login pun bisa liat answer
 router.post('/', jwt.isLogin, answerController.add)
-router.delete('/:id',jwt.isLogin, answerController.remove)
+// delete require jwt.auth, ntar tambahin
+router.delete('/:id',jwt.isLogin, answerController.remove)//params id answer
+// router.delete('/:id', answerController.remove)
+router.delete('/destroy', answerController.destroyAll)
 
 // voted route
 router.post('/voteup', jwt.isLogin, answerController.voteUp)

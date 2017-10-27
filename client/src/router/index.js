@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Home from '@/components/Home'
+import Answer from '@/components/Answer'
 import Login from '@/components/Login'
 import SignUp from '@/components/Signup'
-import Home from '@/components/Home'
 import Question from '@/components/Question'
 import Allquestion from '@/components/Allquestion'
 // import PostQuestion from '@/components/PostQuestion'
@@ -29,16 +30,22 @@ export default new Router({
       component: EditQuestion
     },
     {
+      path: '/answer',
+      name: 'Answer',
+      component: Answer
+    },
+    {
       path: '/',
       component: Home,
       children: [
         { path: '', name: 'Allquestion', component: Allquestion },
         {
-          path: ':id/',
+          path: ':id',
           name: 'QuestionUser',
           component: Question,
           // props: true,
           children: [
+            {path: '', name: 'QuestionUser'},
             {
               path: 'edit',
               name: 'EditQuestion',

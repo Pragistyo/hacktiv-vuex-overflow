@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div id="editQ">
     <Navbar></Navbar>
     <div class="row">
-        <div class="col-md-4 col-md-offset-4 col-xs-8 col-xs-offset-2">
+        <div class="col-md-6 col-md-offset-3 col-xs-8 col-xs-offset-2">
             <form v-on:submit.prevent="bla" class="form-horizontal">
               <fieldset>
                   <label class="pull-left" style="font-size:22px; padding-top:20px; text-decoration:underline"> Edit Question: </label><br>
@@ -52,7 +52,7 @@ export default {
     ]),
     update () {
       // alert('masuk edit')
-      // alert(JSON.stringify(this.formEdit))
+      alert(JSON.stringify(this.formEdit))
       this.updateData(this.formEdit)
       if (this.formEdit.fromRouter === '/') {
         this.$router.push('/')

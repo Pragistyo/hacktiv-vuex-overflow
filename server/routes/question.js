@@ -22,4 +22,6 @@ router.post('/answer', jwt.isLogin, questionController.answer)
 router.post('/voteup', jwt.isLogin, questionController.voteUp)
 router.post('/votedown', jwt.isLogin, questionController.voteDown)
 
+router.delete('/apus', questionController.pullAnswer)
+
 module.exports = router;

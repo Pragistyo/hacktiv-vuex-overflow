@@ -35,7 +35,9 @@
                 class="btn btn-danger fa fa-trash-o">
                 DELETE
                 </button>
-                <button class="btn btn-success fa fa-list-alt"> SEE DETAIL</button>
+                <router-link to="/answer">
+                  <button class="btn btn-primary fa fa-reply"> ANSWER</button>
+                </router-link>
               </div>
             </div>
         </div>
@@ -74,7 +76,6 @@ export default {
     },
     updateQuestion (objQuestion, index, userId, questionId) {
       alert('masuk update')
-      // alert(JSON.stringify(objQuestion))
       this.formEdit.title = objQuestion.title
       this.formEdit.content = objQuestion.content
       this.formEdit.userId = userId

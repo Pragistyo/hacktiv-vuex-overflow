@@ -6,7 +6,7 @@ vue.use(Vuex)
 
 const state = {
   question: [],
-  questionDetail: [],
+  answerData: [],
   loginStatus: {
     status: false,
     token: null
@@ -20,7 +20,14 @@ const state = {
     content: null,
     userId: null,
     questionId: null,
-    fromRouter: null
+    fromRouter: null,
+    createdAt: null
+  },
+  allAnswer: [],
+  formAnswer: {
+    userId: null,
+    answer: null,
+    questionId: null
   },
   userQuestion: null,
   signup: ''
@@ -62,7 +69,7 @@ const mutations = {
     state.signup = payload
   },
   setAnswerData (state, payload) {
-    state.questionDetail = payload
+    state.answerData = payload
   }
 }
 
@@ -108,18 +115,70 @@ const actions = {
       console.log(err + ' ============')
     })
   },
+  updateData ({ commit }, payload) {
+    axios.put(`http://localhost:3000/question/`, {
+      id: payload.userId,
+      id_question: payload.questionId,
+      title: payload.title,
+      content: payload.content
+    }, {
+      headers: {
+        token: localStorage.getItem('token')
+      }
+    })
+      .then(result => {
+        console.log(result.data)
+        alert('Your Question Successfully updated')
+        // commit('set', result.data)
+      })
+      .catch(err => {
+        console.log('INI ERROR >> ' + err)
+      })
+  },
+  deleteData ({ commit }, payload) {
+    axios({
+      method: 'delete',
+      url: `http://localhost:3000/question/`,
+      headers: { 'token': localStorage.getItem('token') },
+      data: {
+        id: payload[0],
+        id_question: payload[1]
+      }
+    })
+      .then(data => {
+        alert('delete data >> ' + JSON.stringify(data))
+        console.log('ini data', data.data)
+      })
+      .catch(err => {
+        alert('Failed to remove data form database')
+        console.log(err)
+      })
+  },
+  getAllAnswer ({ commit }, payload) {
+    console.log('payload allAnswer' + JSON.stringify(payload))
+    axios.get(`http://localhost:3000/answer/find/${payload}`)
+    .then(result => {
+      console.log(result.data)
+      commit('setAnswerData', result.data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  },
   postAnswer ({ commit }, payload) {
-    console.log('ini payload', JSON.stringify(payload.answer.answer))
-    axios.post(`http://localhost:3000/question/answer/${payload.id}`, {
-      answer: payload.answer.answer
+    console.log('ini payload answer', JSON.stringify(payload))
+    axios.post(`http://localhost:3000/answer/`, {
+      id: payload.userId[0]._id,
+      content: payload.answer,
+      id_question: payload.questionId
     }, {
       headers: {
         token: localStorage.getItem('token')
       }
     })
     .then(dataAnswer => {
+      alert(JSON.stringify(dataAnswer))
       console.log('ini dataAnswer', dataAnswer.data)
-      commit('setAnswerData', dataAnswer.data)
     })
   },
   login ({ commit }, payload) {
@@ -181,47 +240,6 @@ const actions = {
         alert('Error get user INFO')
         console.log(err)
       })
-  },
-  updateData ({commit}, payload) {
-    axios.put(`http://localhost:3000/question/`, {
-      id: payload.userId,
-      id_question: payload.questionId,
-      title: payload.title,
-      content: payload.content
-    }, {
-      headers: {
-        token: localStorage.getItem('token')
-      }
-    })
-    .then(result => {
-      console.log(result.data)
-      alert('Your Question Successfully updated')
-      // commit('set', result.data)
-    })
-    .catch(err => {
-      console.log('INI ERROR >> ' + err)
-    })
-  },
-  deleteData ({commit}, payload) {
-    // alert('masuk delete data' + JSON.stringify(payload[0]))
-    // alert('masuk delete data2' + JSON.stringify(payload[1]))
-    axios({
-      method: 'delete',
-      url: `http://localhost:3000/question/`,
-      headers: {'token': localStorage.getItem('token')},
-      data: {
-        id: payload[0],
-        id_question: payload[1]
-      }
-    })
-    .then(data => {
-      alert('delete data >> ' + JSON.stringify(data))
-      console.log('ini data', data.data)
-    })
-    .catch(err => {
-      alert('Failed to remove data form database')
-      console.log(err)
-    })
   }
 }
 

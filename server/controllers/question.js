@@ -130,6 +130,23 @@ class questionController {
       res.send(err)
     })
   }
+  
+  static pullAnswer (req,res) {
+    console.log('OKKKKKK');
+    console.log(req.body);
+    question.update(
+    { _id: req.body.id},
+    { 
+      // $pop: { answer: -1}
+      '$pull': {'answer': {'_id':req.body.apus}}
+    })
+    .then(hasil => {
+      res.send(hasil)
+    })
+    .catch(err => {
+      res.send('error')
+    })
+  }
 }
 
 module.exports = questionController

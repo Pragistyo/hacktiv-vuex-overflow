@@ -6,9 +6,9 @@
     @showHome="allQuestion=true, signUpForm=false, loginForm=false, postQuestion= true, editForm=false"
     @showUserQuestion="allQuestion=false, postQuestion= false, editForm=false"
     ></Navbar>
-    <div class="row">
+    <div class="row" v-if="userData.username && userData.username != 'undefined' ">
       <legend class="col-md-6 col-md-offset-3" style="color:black">
-        <h1 v-if="userData.username && userData.username != 'undefined' " class="hello"> Hello : {{userData.username}} !</h1>
+        <h1  class="hello"> Hello : {{userData.username}} !</h1>
       </legend>
     </div>
     <PostQuestion v-if="postQuestion"></PostQuestion>

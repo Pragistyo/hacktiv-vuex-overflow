@@ -7,28 +7,42 @@ class answerController {
 
   }
 
-  static findById (req,res) {
-    if(req.body.id_question) {
-      answer.find({id_user:req.locals.id,id_question:req.body.id_question})
-      .populate('id_user')
-      .populate('id_question','_id title content')
-      .then(result=>{
-        res.send(result)
-      })
-      .catch(err=>{
-        res.send(err)
-      })
-    }else{
-      answer.find({id_user:req.body.id})
-      .populate('id_user')
-      .populate('id_question','_id title content')
-      .then(result=>{
-        res.send(result)
-      })
-      .catch(err=>{
-        res.send(err)
-      })
-    }
+  // static findById (req,res) {
+  //   if(req.body.id_question) {
+  //     answer.find({id_user:req.locals.id,id_question:req.body.id_question})
+  //     .populate('id_user')
+  //     .populate('id_question','_id title content')
+  //     .then(result=>{
+  //       res.send(result)
+  //     })
+  //     .catch(err=>{
+  //       res.send(err)
+  //     })
+  //   }else{
+  //     answer.find({id_user:req.body.id})
+  //     .populate('id_user')
+  //     .populate('id_question','_id title content')
+  //     .then(result=>{
+  //       res.send(result)
+  //     })
+  //     .catch(err=>{
+  //       res.send(err)
+  //     })
+  //   }
+  // }
+
+  static findByIdQuestion (req,res) {
+    console.log('denny bangke')
+    console.log(req.body)
+    answer.find({id_question:req.params.id_question})
+    .populate('id_user')
+    .populate('id_question')
+    .then(result => {
+      res.send(result)
+    })
+    .catch(err =>{
+      res.send(err)
+    })
   }
 
   static add (req,res) {
@@ -37,11 +51,13 @@ class answerController {
       id_question:req.body.id_question,
       content: req.body.content
     })
-    ,then(result => {
-      question.updateOne(
-                          {$push:{answer:result._id}},
-                          {_id:req.params.id})
+    .then(result => {
+      console.log('=========== ogitampan ' + result);
+      question.update(
+                          {_id:req.body.id_question},//idQuestion
+                          {$push:{answer:result._id}})//idAnswer
       .then(resultQuestion=>{
+        console.log('hahahahha ' + resultQuestion);
         res.send(resultQuestion)
       })
       .catch(err=>{console.log(err)})
@@ -80,6 +96,28 @@ class answerController {
     answer.remove({_id:req.params.id})
     .then(result => {
       res.send(result)
+    })
+    .catch(err => {
+      res.send(err)
+    })
+  }
+
+  static alls (req,res) {
+    answer.find({})
+    .populate('id_user')
+      .populate('id_question')
+    .then(result => {
+      res.send(result)
+    })
+    .catch(err => {
+      res.send('ERROR NIH')
+    })
+  }
+
+  static destroyAll (req,res) {
+    answer.remove({})
+    .then(result => {
+      res.send('sukses')
     })
     .catch(err => {
       res.send(err)
