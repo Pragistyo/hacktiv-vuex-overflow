@@ -1,42 +1,47 @@
 <template>
     <div class="row">
       <!-- {{getAllQuestion}} -->
+      <HelloUser></HelloUser>
+      <PostQuestion></PostQuestion>
         <div class="col-md-6 col-md-offset-3 col-xs-8 col-xs-offset-2" 
              v-for="(item,index) in getAllQuestion" :key="item._id" >
             <div class="panel panel-primary">
               <div class="panel-heading">
-                <h2>{{item.title}}</h2>
+                <h3>{{item.title}}</h3>
               </div>
               <div class="panel-body">
                   <div>
-                    <legend><h3>Author:  {{item.id_user[0].username}}</h3></legend>
+                    <legend><h4>Author:  {{item.id_user[0].username}}</h4></legend>
                   </div>
-                  <div>
-                    <p>{{item.content}}</p>
-                  </div>
+                  <!-- <div> -->
+                    <!-- <p>{{item.content}}</p> -->
+                  <!-- </div> -->
                   <div class="col-sm-12">
-                    <button class="btn btn-default fa fa-thumbs-up">
+                    <button class="btn btn-secondary fa fa-thumbs-up">
                     {{item.vote_up.length}}</button>
-                    <button class="btn btn-default fa fa-thumbs-down">
+                    <button class="btn btn-secondary fa fa-thumbs-down">
                     {{item.vote_down.length}}</button>
-                    <router-link to="/edit">
+                    <!-- {{item.id_user[0].username}} -->
+                    <!-- <router-link :to="{name: 'EditParams', params:{id:item.id_user[0].username, question:item._id}}"> -->
+                    <!-- <router-link :to="item.id_user[0].username + '/edit/' + item._id">
                       <button 
                       v-if = "userData.id == item.id_user[0]._id"
                       class="btn btn-info fa fa-pencil-square-o"
                       @click="updateQuestion(item,index,item.id_user[0]._id,item._id)">
                       EDIT
                       </button>
-                    </router-link>
+                    </router-link> -->
                     <button 
                     v-if = "userData.id == item.id_user[0]._id"
                     class="btn btn-danger fa fa-trash-o"
                     @click="deleteQuestion(index,item.id_user[0]._id,item._id)">
                     DELETE
                     </button>
-                    <router-link to="/answer">
+                    <router-link :to="{name:'AnswerParams', params:{id:item._id}}">
+                    <!-- <router-link to="/answer/"> -->
                       <button 
                       @click="answerQuestion(item,index)"
-                      class="btn btn-primary fa fa-reply">
+                      class="btn btn btn-outline-info fa fa-reply">
                       ANSWER: {{item.answer.length}}
                       </button>
                     </router-link>
@@ -50,10 +55,16 @@
 
 <script>
 import {mapState, mapActions} from 'vuex'
+import PostQuestion from '@/components/PostQuestion'
+import HelloUser from '@/components/HelloUser'
 export default {
   data () {
     return {
     }
+  },
+  components: {
+    PostQuestion,
+    HelloUser
   },
   computed: {
     ...mapState({
@@ -66,7 +77,7 @@ export default {
   methods: {
     ...mapActions([
       'getData',
-      // 'updateData',
+      'getSingleQuestion',
       'deleteData'
     ]),
     deleteQuestion (index, userId, questionId) {
@@ -74,28 +85,25 @@ export default {
       this.getAllQuestion.splice(index, 1)
     },
     updateQuestion (objQuestion, index, userId, questionId) {
-      alert('masuk update')
-      this.formEdit.title = objQuestion.title
-      this.formEdit.content = objQuestion.content
-      this.formEdit.userId = userId
-      this.formEdit.questionId = questionId
+      this.getSingleQuestion(questionId)
       this.formEdit.fromRouter = '/'
     },
     answerQuestion (objQuestion, index) {
       // this.$swal(JSON.stringify(objQuestion))
-      alert(JSON.stringify(objQuestion))
-      this.formEdit.title = objQuestion.title
-      this.formEdit.content = objQuestion.content
-      this.formEdit.userId = objQuestion.id_user
-      this.formEdit.questionId = objQuestion._id
+      // alert(JSON.stringify(objQuestion))
+      this.getSingleQuestion(objQuestion._id)
       this.formAns.userId = objQuestion.id_user
       this.formAns.questionId = objQuestion._id
       this.formAns.fromRouter = '/'
-      alert(JSON.stringify(this.formAns))
     }
   },
-  mounted: function () {
+  created: function () {
     this.getData()
+  },
+  watch: { // not a solution yet
+    userData: function (a) {
+      this.getData()
+    }
   }
 }
 </script>
@@ -107,7 +115,12 @@ export default {
 .panel-heading {
   padding: 1px 0px 0px 0px;
 }
-h2, h3 {
+h3 {
+  color: #19364C;
+  /* font-family: Architects Daughter; */
+  font-family: Gruppo;
+}
+h3, h4 {
   margin-top: 10px;
 }
 </style>

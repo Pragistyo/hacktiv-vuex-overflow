@@ -7,7 +7,7 @@
   </div>
   <!-- <p>{{userQuestion}}</p> -->
   <div class="row">
-    <div class="col-md-6 col-md-offset-3">
+    <div class="col-md-6 col-md-offset-3 col-xs-8 col-xs-offset-2">
         <div v-for="(item,index) in userQuestion" :key="">
             <div class="panel panel-primary">
               <div class="panel panel-heading">
@@ -22,7 +22,8 @@
                 {{item.vote_up.length}}</button>
                 <button class="btn btn-default fa fa-thumbs-down">
                 {{item.vote_down.length}}</button>
-                <router-link to='/edit'>
+                <!-- <router-link :to="{name: 'EditParams', params:{id:item.id_user[0].username,answer:item._id}}"> -->
+                <router-link :to="item.id_user[0].username + '/edit/' + item._id">
                 <button 
                 v-if = "userData.id == item.id_user[0]._id"
                 class="btn btn-info fa fa-pencil-square-o"
@@ -35,8 +36,11 @@
                 class="btn btn-danger fa fa-trash-o">
                 DELETE
                 </button>
-                <router-link to="/answer">
-                  <button class="btn btn-primary fa fa-reply"> ANSWER</button>
+                <router-link :to="{name: 'AnswerParams', params: {id:item._id}}">
+                  <button 
+                  class="btn btn-primary fa fa-reply"
+                  > ANSWER: {{item.answer.length}}
+                  </button>
                 </router-link>
               </div>
             </div>
@@ -69,13 +73,15 @@ export default {
     ...mapActions([
       'getUserQuestion',
       'postData',
-      'checkLogin'
+      'checkLogin',
+      'getSingleQuestion'
     ]),
-    post () {
+    post () { // ga kepake
       this.postData(this.form)
     },
     updateQuestion (objQuestion, index, userId, questionId) {
-      alert('masuk update')
+      // alert('masuk update')
+      this.getSingleQuestion(questionId)
       this.formEdit.title = objQuestion.title
       this.formEdit.content = objQuestion.content
       this.formEdit.userId = userId
@@ -83,14 +89,16 @@ export default {
       this.formEdit.fromRouter = `/${this.userData.username}`
     }
   },
-  mounted: function () {
-    // alert(JSON.stringify(this.userData.id))
-    this.getUserQuestion(this.userData.id)
+  created: function () {
     if (localStorage.token) {
       this.checkLogin()
-    }
-    if (this.loginStatus.status === false) {
+    } else {
       this.$router.push('/')
+    }
+  },
+  watch: {
+    userData: function (blabla) {
+      this.getUserQuestion(this.userData.id)
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <!-- <div class="modal-dialog"> -->
     <div class="row">
-      <div class="col-md-6 col-md-offset-3">
+      <div class="col-xs-6 col-xs-offset-3">
     <!-- <div class="modal-content"> -->
       <!-- <form v-on:submit.prevent="userLogin()"> -->
           <div class="modal-header">
@@ -72,4 +72,8 @@ padding-bottom: 20px;
 .pull-left {
   padding-left: 10px;
 }
+label {
+  font-family: Gruppo;
+}
+
 </style>

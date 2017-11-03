@@ -21,6 +21,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 export default {
+  props: ['id'],
   data () {
     return {
       // formAns: {
@@ -33,7 +34,6 @@ export default {
       loginStatus: 'loginStatus',
       userData: 'userData',
       formAns: 'formAnswer',
-      formEdit: 'formEdit',
       answerData: 'answerData'
     })
   },
@@ -44,18 +44,17 @@ export default {
       'getAllAnswer'
     ]),
     answerPost () {
-      alert(JSON.stringify(this.formAns))
-      this.formAns.userId = this.formEdit.userId
-      this.formAns.questionId = this.formEdit.questionId
-      alert('ok masuk ' + JSON.stringify(this.formAns))
+      this.formAns.userId = this.userData.id
+      this.formAns.questionId = this.id // this.id === id_question
+      this.formAns.username = this.userData.username
       this.postAnswer(this.formAns)
-      this.getAllAnswer(this.formEdit.questionId)
+      // this.getAllAnswer(this.id)
       this.clear()
     },
     clear () {
       this.formAns.userId = null
       this.formAns.answer = null
-      this.formAns.questionId = null
+      // this.formAns.questionId = null
     }
   },
   mounted: function () {
@@ -64,8 +63,8 @@ export default {
     }
   },
   watch: {
-    answerData: function (blabla) {
-      this.getAllAnswer(this.formEdit.questionId)
+    answerData: function (cpetLulus) {
+      this.getAllAnswer(this.id)
     }
   }
 }

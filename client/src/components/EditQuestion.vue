@@ -1,21 +1,21 @@
 <template>
   <div id="editQ">
-    <Navbar></Navbar>
     <div class="row">
+      <!-- <p>{{ singleQuestion._id }}</p> -->
         <div class="col-md-6 col-md-offset-3 col-xs-8 col-xs-offset-2">
-            <form v-on:submit.prevent="bla" class="form-horizontal">
+            <form v-on:submit.prevent="update" class="form-horizontal">
               <fieldset>
                   <label class="pull-left" style="font-size:22px; padding-top:20px; text-decoration:underline"> Edit Question: </label><br>
                   <button 
                   type="submit"
                   class="btn btn-info pull-right"
-                  @click="update()"
+                  @click=""
                   >EDIT
                   </button><br><br>
                   <label class="pull-left" for="titleQ" style="padding-top:10px;"> Title Question: </label>
-                  <input v-model="formEdit.title" class="form-control" type="text" id="titleQ" placeholder="title" style="color:teal;" required></input><br>  
+                  <input v-model="singleQuestion.title" class="form-control" type="text" id="titleQ" placeholder="title" style="color:teal;" required></input><br>  
                   <label class="pull-left"> Description: </label>
-                  <textarea  v-model="formEdit.content" class="form-control" type="text" placeholder="Question Description" value = "test value" style="color:teal;" required></textarea><br>
+                  <textarea  v-model="singleQuestion.content" class="form-control" type="text" placeholder="Question Description" value = "test value" style="color:teal;" required></textarea><br>
               </fieldset>
           </form>
         </div>
@@ -27,12 +27,9 @@
 import Navbar from '@/components/Navbar'
 import {mapState, mapActions} from 'vuex'
 export default {
+  props: ['questionRouter'],
   data () {
     return {
-      // formEdit: {
-      //   title: null,
-      //   content: null
-      // }
     }
   },
   components: {
@@ -42,42 +39,42 @@ export default {
     ...mapState({
       userData: 'userData',
       loginStatus: 'loginStatus',
-      formEdit: 'formEdit'
+      formEdit: 'formEdit',
+      singleQuestion: 'singleQuestion'
     })
   },
   methods: {
     ...mapActions([
       'checkLogin',
-      'updateData'
+      'updateData',
+      'getSingleQuestion'
     ]),
     update () {
-      // alert('masuk edit')
-      alert(JSON.stringify(this.formEdit))
-      this.updateData(this.formEdit)
-      if (this.formEdit.fromRouter === '/') {
-        this.$router.push('/')
-      } else if (this.formEdit.fromRouter === `/${this.userData.username}`) {
+      this.updateData([this.singleQuestion, this.formEdit.fromRouter])
+
+      if (this.formEdit.fromRouter === `/${this.userData.username}`) {
         this.$router.push(`/${this.userData.username}`)
+      } else {
+        this.$router.push(`/answer/${this.singleQuestion._id}`)
       }
       this.clear()
     },
     clear () {
-      this.formEdit.title = null
-      this.formEdit.content = null
-      this.formEdit.userId = null
-      this.formEdit.questionId = null
       this.formEdit.fromRouter = null
+      this.singleQuestion = {}
     }
   },
   mounted: function () {
     if (localStorage.token) {
       this.checkLogin()
-    }
-    if (this.loginStatus.status === false) {
+    } else {
       this.$router.push('/')
     }
   },
   watch: {
+    userData: function (pengenCepetLulus) {
+      this.getSingleQuestion(this.questionRouter)
+    }
   }
 }
 </script>

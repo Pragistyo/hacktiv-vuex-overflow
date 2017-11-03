@@ -38,22 +38,34 @@ export default new Router({
       path: '/',
       component: Home,
       children: [
-        { path: '', name: 'Allquestion', component: Allquestion },
         {
-          path: ':id',
+          path: '',
+          name: 'Allquestion',
+          component: Allquestion
+        },
+        {
+          path: ':id/edit/:questionRouter', // myquestion
+          name: 'EditParams',
+          component: EditQuestion,
+          props: true
+        },
+        {
+          path: 'answer/:id', // myquestion
+          name: 'AnswerParams',
+          component: Answer,
+          props: true
+        },
+        {
+          path: ':id/', // myquestion
           name: 'QuestionUser',
           component: Question,
-          // props: true,
-          children: [
-            {path: '', name: 'QuestionUser'},
-            {
-              path: 'edit',
-              name: 'EditQuestion',
-              component: EditQuestion
-            }
-          ]
+          props: true
         }
       ]
     }
   ]
 })
+
+// / --> Home
+// /edit --> question denny
+// /denny/edit --> edit questionnya denny

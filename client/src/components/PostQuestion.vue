@@ -1,13 +1,12 @@
 <template>
      <div class="row form-horizontal">
       <div class="col-md-6 col-md-offset-3 col-xs-8 col-xs-offset-2">
-        <form v-on:submit.prevent="bla" class="form-horizontal">
+        <form v-on:submit.prevent="post" class="form-horizontal">
             <fieldset>
                 <label class="pull-left" style="font-size:22px; padding-top:20px; text-decoration:underline"> Post Question: </label><br>
                 <button 
                 type="submit"
                 class="btn btn-success pull-right"
-                @click=""
                 >POST
                 </button><br><br>
                 <label class="pull-left" for="titleQ" style="padding-top:10px;"> Title Question: </label>
@@ -43,7 +42,7 @@ export default {
     ...mapActions([
       'postData'
     ]),
-    bla () {
+    post () {
       this.postData(this.formQ)
       this.formQ.title = null
       this.formQ.content = null

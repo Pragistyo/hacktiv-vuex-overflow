@@ -1,41 +1,57 @@
 <template>
 <div>
-  <Navbar></Navbar>
   <div class="row">
       <div class="col-md-6 col-md-offset-3 col-xs-8 col-xs-offset-2">
         <div>
           <h1 class="helloAnswer">Answer</h1>
         </div>
         <!-- PANEL QUESTION -->
+        <!-- <p>{{singleQuestion}}</p> -->
         <div class="panel panel-primary">
           <div class="panel-heading">
             <legend>
-              <h2 style="margin-top:-10px">{{formEdit.title}}</h2>
+              <h2 style="margin-top:-10px">{{singleQuestion.title}}</h2>
             </legend>
             <h3 style="margin-top:-10px; color:teal">
-              Author: {{formEdit.userId[0].username}}
+              Author: {{singleQuestion.id_user[0].username}}
             </h3>
           </div>
           <div class="panel-body">
-            <p>{{formEdit.content}}</p>
+            <p>{{singleQuestion.content}}</p>
           </div>
+          <div>
+            <router-link :to="'/' +singleQuestion.id_user[0].username + '/edit/' + singleQuestion._id">
+            <!-- <router-link :to="singleQuestion.id_user[0].username"> -->
+              <button 
+              v-if = "userData.id == singleQuestion.id_user[0]._id"
+              @click= "updateQuestion(singleQuestion._id)"
+              class="btn btn-info fa fa-pencil-square-o">
+                EDIT
+              </button>
+            </router-link>
+          </div><br>
         </div>
-        <button @click="test(formEdit.questionId)">TEST</button>
         <!-- FORM ANSWER -->
-        <PostAnswer></PostAnswer>
+        <PostAnswer :id="id"></PostAnswer>
         <!-- PANEL ALL ANSWER -->
-        <div class="panel panel-warning" v-for="(answer,index) in answerData"><!-- v-for answer di sini -->
+        <div class="panel panel-warning" v-for="(answer,index) in answerQuestion" :key="index"><!-- v-for answer di sini -->
           <div class="panel-heading"> <!-- HEADER -->
             <h3 style="margin-top:-7px">Answer Author: {{answer.id_user.username}}</h3> <!-- Isi sama author answer -->
           </div>
           <div class="panel-body"> <!-- BODY -->
               <p>{{answer.content}}</p>
-              <!-- <p>{{answer}}</p> -->
-              <div>
+              <!-- <p>answer ID: {{answer._id}}</p> -->
+              <!-- <p>user ID: {{answer}}</p> -->
+              <div>                                                                                                                               
                 <button class="btn btn-default fa fa-thumbs-up">
                 {{answer.vote_up.length}}</button>
                 <button class="btn btn-default fa fa-thumbs-down">
                 {{answer.vote_down.length}}</button>
+                <button 
+                class="btn btn-danger fa fa-trash"
+                @click="deleteThisAnswer([userData.id,answer._id], index)"
+                v-if="userData.id === answer.id_user._id">
+                DELETE</button>
               </div>
           </div>
         </div>
@@ -49,8 +65,16 @@ import Navbar from '@/components/Navbar'
 import PostAnswer from '@/components/PostAnswer'
 import {mapState, mapActions} from 'vuex'
 export default {
+  props: ['id'],
   data () {
     return {
+    }
+  },
+  mounted: function () {
+    this.getSingleQuestion(this.id)
+    this.getAllAnswer(this.id)
+    if (localStorage.token) {
+      this.checkLogin()
     }
   },
   components: {
@@ -62,31 +86,31 @@ export default {
       userData: 'userData',
       loginStatus: 'loginStatus',
       formEdit: 'formEdit',
-      answerData: 'answerData'
+      answerQuestion: 'answerQuestion',
+      singleQuestion: 'singleQuestion'
     })
   },
   methods: {
     ...mapActions([
       'postAnswer',
       'checkLogin',
-      'getAllAnswer'
+      'getAllAnswer',
+      'getSingleQuestion',
+      'deleteAnswer'
     ]),
-    test (bla) {
-      this.getAllAnswer(bla)
+    updateQuestion (questionId) {
+      this.getSingleQuestion(questionId)
+    },
+    deleteThisAnswer (arrParams, index) {
+      alert(index)
+      this.deleteAnswer(arrParams)
+      this.answerQuestion.splice(index, 1)
     }
-  },
-  mounted: function () {
-    if (localStorage.token) {
-      this.checkLogin()
-    }
-    if (this.loginStatus.status === false) {
-      this.$router.push('/')
-    }
-    this.getAllAnswer(this.formEdit.questionId)
   },
   watch: {
-    // answerData: function () {
-    //   this.getAllAnswer(this.formEdit.questionId)
+    // id: function (semogaCepetLulus) {
+    //   this.getAllAnswer(this.id)
+    //   this.getSingleQuestion(this.id)
     // }
   }
 }

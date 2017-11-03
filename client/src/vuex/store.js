@@ -1,12 +1,13 @@
 import vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import swal from 'sweetalert'
 
 vue.use(Vuex)
 
 const state = {
   question: [],
-  answerData: [],
+  answerQuestion: [],
   loginStatus: {
     status: false,
     token: null
@@ -23,14 +24,15 @@ const state = {
     fromRouter: null,
     createdAt: null
   },
-  allAnswer: [],
+  // allAnswer: [],
   formAnswer: {
     userId: null,
     answer: null,
     questionId: null
   },
   userQuestion: null,
-  signup: ''
+  signup: '',
+  singleQuestion: {}
 }
 
 // MUTATIONS
@@ -38,6 +40,10 @@ const mutations = {
   setGetData (state, payload) {
     state.question = payload
     console.log('ini mutasi question ===========' + JSON.stringify(payload))
+  },
+  setSingleData (state, payload) {
+    // alert('setStateSingle ' + JSON.stringify(payload))
+    state.singleQuestion = payload
   },
   setDetailQuestion (state, payload) {
     state.questionDetail = payload
@@ -48,7 +54,7 @@ const mutations = {
   setPostData (state, payload) {
     payload.id_user = [{'_id': payload.id_user[0], 'username': state.userData.username}]
     state.question.push(payload)
-    alert('You post a Question')
+    swal('You post a Question', '', 'success')
   },
   setLogin (state, payload) {
     console.log('ini payload' + JSON.stringify(payload.objToken))
@@ -69,7 +75,10 @@ const mutations = {
     state.signup = payload
   },
   setAnswerData (state, payload) {
-    state.answerData = payload
+    state.answerQuestion = payload
+    console.log('++++++++++++++++++++++++++++++++++++')
+    console.log(JSON.stringify(state.answerQuestion))
+    console.log('++++++++++++++++++++++++++++++++++++')
   }
 }
 
@@ -80,6 +89,20 @@ const actions = {
     .then(data => {
       console.log('ini data question' + JSON.stringify(data.data))
       commit('setGetData', data.data)
+    })
+  },
+  getSingleQuestion ({commit}, payload) { // payload isi string id question
+    axios.get(`http://localhost:3000/question/${payload}`, {
+      headers: {
+        token: localStorage.getItem('token')
+      }
+    })
+    .then(({data}) => {
+      console.log('ini data single question' + JSON.stringify(data))
+      commit('setSingleData', data)
+    })
+    .catch(err => {
+      console.log(err)
     })
   },
   getUserQuestion ({ commit }, payload) {
@@ -117,10 +140,12 @@ const actions = {
   },
   updateData ({ commit }, payload) {
     axios.put(`http://localhost:3000/question/`, {
-      id: payload.userId,
-      id_question: payload.questionId,
-      title: payload.title,
-      content: payload.content
+      // id: payload.userId, // payload.id_user[0]._id
+      id: payload[0].id_user[0]._id,
+      // id_question: payload.questionId, // payload._id
+      id_question: payload[0]._id,
+      title: payload[0].title, // equal
+      content: payload[0].content // equal
     }, {
       headers: {
         token: localStorage.getItem('token')
@@ -155,20 +180,19 @@ const actions = {
       })
   },
   getAllAnswer ({ commit }, payload) {
-    console.log('payload allAnswer' + JSON.stringify(payload))
     axios.get(`http://localhost:3000/answer/find/${payload}`)
-    .then(result => {
-      console.log(result.data)
-      commit('setAnswerData', result.data)
+    .then(({data}) => {
+      console.log(data)
+      commit('setAnswerData', data)
     })
     .catch(err => {
       console.log(err)
     })
   },
-  postAnswer ({ commit }, payload) {
+  postAnswer ({ dispatch, commit }, payload) {
     console.log('ini payload answer', JSON.stringify(payload))
     axios.post(`http://localhost:3000/answer/`, {
-      id: payload.userId[0]._id,
+      id: payload.userId,
       content: payload.answer,
       id_question: payload.questionId
     }, {
@@ -177,8 +201,38 @@ const actions = {
       }
     })
     .then(dataAnswer => {
-      alert(JSON.stringify(dataAnswer))
-      console.log('ini dataAnswer', dataAnswer.data)
+      if (dataAnswer.data.name === 'JsonWebTokenError') {
+        swal('Please Sign In', 'Sign in to Post Answer', 'warning')
+      } else {
+        axios.get(`http://localhost:3000/answer/find/${payload.questionId}`)
+          .then(({ data }) => {
+            console.log(data)
+            commit('setAnswerData', data)
+          })
+        console.log('ini dataAnswer', dataAnswer.data)
+      }
+    })
+  },
+  deleteAnswer ({commit}, payload) {
+    alert('PAYLOAD DELETE ANSWER ' + JSON.stringify(payload))
+    axios({
+      method: 'delete',
+      url: `http://localhost:3000/answer/destroy`,
+      headers: { 'token': localStorage.getItem('token') },
+      data: {
+        id: payload[0],
+        id_answer: payload[1]
+      }
+    })
+    .then(result => {
+      alert(JSON.stringify(result))
+      alert(result)
+      // alert('delete answer >> ' + JSON.stringify(result))
+      console.log('ini delete answer', result.data)
+    })
+    .catch(err => {
+      alert(err)
+      console.log(err)
     })
   },
   login ({ commit }, payload) {
@@ -196,7 +250,7 @@ const actions = {
       })
       .then(result => {
         if (result.data.username) {
-          alert('Welcome: ' + result.data.username)
+          swal(`Welcome: ${result.data.username}`, '', 'success')
         }
         commit('setLogin', {objToken: response.data, objUser: result.data})
       })
@@ -210,16 +264,21 @@ const actions = {
     })
   },
   signup ({ commit }, payload) {
+    alert(JSON.stringify(payload))
     axios.post('http://localhost:3000/users', {
       username: payload.username,
       password: payload.password,
       email: payload.email
     })
     .then(response => {
+      if (response.data.errmsg) {
+        swal('Duplicate !', 'Username and/or email already been used', 'error')
+      }
       commit('setSignup', response.data)
     })
     .catch(err => {
       console.log(err)
+      alert('ERROR REGISTER' + err)
     })
   },
   checkLogin ({ commit }, payload) {
@@ -234,6 +293,8 @@ const actions = {
       .then(result => { // hasilnya data user
         if (result.data.id) {
           commit('setLogin', { objToken: {token: localStorage.token}, objUser: result.data })
+        } else {
+          this.$router.push('/')
         }
       })
       .catch(err => {

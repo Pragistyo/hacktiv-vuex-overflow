@@ -1,4 +1,5 @@
 const question = require('../models/Question');
+const answer = require('../models/Answer');
 
 class questionController {
   constructor() {
@@ -28,8 +29,8 @@ class questionController {
     })
   }
   static findByQuestionId (req,res) {
-    question.find({_id:req.params.id})
-    populate('id_user','_id username email')
+    question.findOne({_id:req.params.id})
+    .populate('id_user','_id username email')
     .populate({ path: 'answer', populate: { path: 'id_user', select: '_id username email'}})
     .then(result => {
       res.send(result)
@@ -71,8 +72,13 @@ class questionController {
     })
   }
   static remove (req,res) {
+    // res.send('REQ BODY---> '+ req.body)
+    // answer.remove({ id_question: req.body.id_question})
+    // .then(result =>{
+    //   res.send(result)
     question.remove({_id:req.body.id_question})
     .then(result=>{
+      console.log(result);
       res.send(result)
     })
     .catch(err=>{
@@ -132,13 +138,11 @@ class questionController {
   }
   
   static pullAnswer (req,res) {
-    console.log('OKKKKKK');
-    console.log(req.body);
     question.update(
     { _id: req.body.id},
     { 
-      // $pop: { answer: -1}
-      '$pull': {'answer': {'_id':req.body.apus}}
+      // $pop: { answer: 1}
+      $pull: {answer: req.body.apus}
     })
     .then(hasil => {
       res.send(hasil)

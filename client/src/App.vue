@@ -21,7 +21,9 @@ export default {
   /*margin-top: 60px;*/
 }
 body {
-  background-image: url("/static/gradient1.png");
+  /* background-color: #FFB87D; */
+  /* background-image: url("/static/gradient2.png"); */
+  background-image: url("/static/wood-background.png");
   background-size: 100%
 }
 </style>

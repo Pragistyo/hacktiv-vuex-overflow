@@ -6,7 +6,7 @@ const questionController = require('../controllers/question')
 
 
 router.get('/all', questionController.findAll)
-router.get('/:id', jwt.isLogin, questionController.findByQuestionId)
+router.get('/:id', questionController.findByQuestionId)
 router.get('/',jwt.isLogin, jwt.authUser, questionController.findById)//punya user
 router.get('/userData/:id', jwt.isLogin, jwt.authUser, questionController.findById)//punya user
 router.post('/',jwt.isLogin, questionController.create)//punya user

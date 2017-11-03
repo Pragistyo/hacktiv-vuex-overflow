@@ -32,10 +32,13 @@ class answerController {
   // }
 
   static findByIdQuestion (req,res) {
-    console.log('denny bangke')
-    console.log(req.body)
-    answer.find({id_question:req.params.id_question})
-    .populate('id_user')
+    // console.log('====================================');
+    // console.log(req.params);
+    // console.log('====================================');
+    answer.find({
+      id_question:req.params.id_question
+    })
+    .populate({path:'id_user', select: '_id username email'})
     .populate('id_question')
     .then(result => {
       res.send(result)
@@ -93,13 +96,14 @@ class answerController {
   }
 
   static remove (req,res) {
-    answer.remove({_id:req.params.id})
-    .then(result => {
-      res.send(result)
-    })
-    .catch(err => {
-      res.send(err)
-    })
+    res.send('ogi')
+    // answer.remove({_id:req.params.id})
+    // .then(result => {
+    //   res.send(result)
+    // })
+    // .catch(err => {
+    //   res.send(err)
+    // })
   }
 
   static alls (req,res) {

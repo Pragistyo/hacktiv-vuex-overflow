@@ -4,11 +4,13 @@ require('dotenv').config()
 
   function isLogin(req,res,next){
     console.log('===========' + req.headers.token);
+    // console.log('ini body' + req.body);
     console.log('===========body ' + JSON.stringify(req.body))
     jwt.verify(req.headers.token, process.env.SECRET_KEY,(err,decoded)=>{
       if(!err){
         req.locals = decoded
         console.log( 'smth ==' + JSON.stringify(req.locals))
+        console.log('log smth')
         next()
       }
       else{
@@ -19,6 +21,7 @@ require('dotenv').config()
   }
 
   function authUser(req,res,next){
+    console.log('OGI')
     console.log('==== ini locals id === ' + req.locals.id);
     console.log('==== ini params id === ' + req.params.id);
     console.log('==== ini body id === ' + JSON.stringify(req.body.id))

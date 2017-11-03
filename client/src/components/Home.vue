@@ -1,20 +1,19 @@
 <template>
 <div>
     <Navbar 
-    @openLogin="allQuestion=false, loginForm=true, signUpForm=false, postQuestion= false, editForm=false"
-    @openSignUp="allQuestion=false, signUpForm=true, loginForm=false, postQuestion= false, editForm=false" 
-    @showHome="allQuestion=true, signUpForm=false, loginForm=false, postQuestion= true, editForm=false"
-    @showUserQuestion="allQuestion=false, postQuestion= false, editForm=false"
+    @openLogin=" loginForm=true, signUpForm=false, postQuestion= false"
+    @openSignUp=" signUpForm=true, loginForm=false, postQuestion= false" 
+    @showHome=" signUpForm=false, loginForm=false, postQuestion= true"
+    @showUserQuestion="allQuestion=false"
     ></Navbar>
-    <div class="row" v-if="userData.username && userData.username != 'undefined' ">
+    <!-- <div class="row" v-if="userData.username && userData.username != 'undefined' && helloFlag">
       <legend class="col-md-6 col-md-offset-3" style="color:black">
         <h1  class="hello"> Hello : {{userData.username}} !</h1>
       </legend>
-    </div>
-    <PostQuestion v-if="postQuestion"></PostQuestion>
-    <Login v-if="loginForm" @closeLogin="allQuestion=true, loginForm=false, postQuestion= true"></Login>
-    <SignUp v-if="signUpForm" @closeSignUp="allQuestion=true, signUpForm=false, postQuestion= true"></SignUp>
-    <!-- <EditQuestion v-if="editForm"></EditQuestion> -->
+    </div> -->
+    <h1>{{nama}}</h1>
+    <Login v-if="loginForm" @closeLogin=" loginForm=false, postQuestion= true"></Login>
+    <SignUp v-if="signUpForm" @closeSignUp=" signUpForm=false, postQuestion= true"></SignUp>
     <router-view 
     v-if="!loginForm && !signUpForm"
     ></router-view>
@@ -29,7 +28,6 @@ import Navbar from '@/components/Navbar'
 // import Question from '@/components/Question'
 // import Allquestion from '@/components/Allquestion'
 import EditQuestion from '@/components/EditQuestion'
-import PostQuestion from '@/components/PostQuestion'
 import QuestionDetail from '@/components/QuestionDetail'
 import { mapActions, mapState } from 'vuex'
 export default {
@@ -45,11 +43,8 @@ export default {
   components: {
     Navbar,
     QuestionDetail,
-    // Allquestion,
     Login,
     SignUp,
-    // Question,
-    PostQuestion,
     EditQuestion
   },
   computed: {
@@ -68,9 +63,6 @@ export default {
     this.getData()
     if (localStorage.token) {
       this.checkLogin()
-    }
-    if (this.dataLogin.status === false) {
-      this.$router.push('/')
     }
   }
 }

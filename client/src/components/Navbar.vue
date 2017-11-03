@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
           <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
@@ -18,13 +18,22 @@
                   <li>
                     <router-link 
                     v-if="dataLogin.status" 
-                    :to="userData.username"
+                    :to="'/' + userData.username"
                     @click.native=" $emit('showUserQuestion')"
                     ><p>YOUR QUESTION</p>
                     </router-link>
                   </li>
+                  <!-- <li>
+                    <router-link 
+                    v-if="dataLogin.status" 
+                    :to="userData.username+'/edit'"
+                    @click.native=" $emit('showUserQuestion')"
+                    ><p>YOUR QUESTION</p>
+                    </router-link>
+                  </li> -->
                   <li>
-                      <div class="col-md-12 col-md-offset-10" style="margin-bottom:10px;">
+                      <!-- <div class="center-block"> -->
+                      <div class="col-sm-12 col-sm-offset-3 col-md-offset-6" style="margin-bottom:10px;">
                           <h2 style="color:Black">HACKTIV-VUEX-OVERFLOW</h2>
                       </div>
                   </li>
@@ -92,4 +101,18 @@ export default {
 a:hover{
   cursor:pointer;
 }
+.navbar {
+  width: 100%
+}
+.navbar-collapse {
+  text-align:center;
+}
+.navbar-nav {
+    display:inline-block;
+    float:none;
+}
+h2 {
+  font-family:  Architects Daughter;
+}
+
 </style>
