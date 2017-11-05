@@ -39,10 +39,8 @@ const state = {
 const mutations = {
   setGetData (state, payload) {
     state.question = payload
-    console.log('ini mutasi question ===========' + JSON.stringify(payload))
   },
   setSingleData (state, payload) {
-    // alert('setStateSingle ' + JSON.stringify(payload))
     state.singleQuestion = payload
   },
   setDetailQuestion (state, payload) {
@@ -68,7 +66,8 @@ const mutations = {
         username: payload.objUser.username
       }
     } else {
-      alert(payload.objToken)
+      alert('sampe sini')
+      swal(`${payload.objToken}`, '', 'error')
     }
   },
   setSignup (state, payload) {
@@ -76,9 +75,6 @@ const mutations = {
   },
   setAnswerData (state, payload) {
     state.answerQuestion = payload
-    console.log('++++++++++++++++++++++++++++++++++++')
-    console.log(JSON.stringify(state.answerQuestion))
-    console.log('++++++++++++++++++++++++++++++++++++')
   }
 }
 
@@ -86,9 +82,9 @@ const mutations = {
 const actions = {
   getData ({ commit }) {
     axios.get('http://localhost:3000/question/all')
-    .then(data => {
-      console.log('ini data question' + JSON.stringify(data.data))
-      commit('setGetData', data.data)
+    .then(({data}) => {
+      console.log('ini data question' + JSON.stringify(data))
+      commit('setGetData', data)
     })
   },
   getSingleQuestion ({commit}, payload) { // payload isi string id question
@@ -111,8 +107,8 @@ const actions = {
         token: localStorage.getItem('token')
       }
     })
-    .then(data => {
-      commit('setUserQuestion', data.data)
+    .then(({data}) => {
+      commit('setUserQuestion', data)
     })
   },
   postData ({ commit }, payload) {
@@ -125,14 +121,14 @@ const actions = {
         token: localStorage.getItem('token')
       }
     })
-    .then(data => {
-      if (data.data.errors) {
-        alert(JSON.stringify('Please fill all the fields'))
-      } else if (data.data.name === 'JsonWebTokenError') {
-        alert(JSON.stringify('PLEASE SIGN IN'))
+    .then(({data}) => {
+      if (data.errors) {
+        swal('Please fill all the fields', '', 'warning')
+      } else if (data.name === 'JsonWebTokenError') {
+        swal('PLEASE SIGN IN', 'You have to sign in to post a question', 'warning')
       }
-      console.log('ini data', data.data)
-      commit('setPostData', data.data)
+      console.log('ini data', data)
+      commit('setPostData', data)
     })
     .catch(err => {
       console.log(err + ' ============')
@@ -140,9 +136,7 @@ const actions = {
   },
   updateData ({ commit }, payload) {
     axios.put(`http://localhost:3000/question/`, {
-      // id: payload.userId, // payload.id_user[0]._id
       id: payload[0].id_user[0]._id,
-      // id_question: payload.questionId, // payload._id
       id_question: payload[0]._id,
       title: payload[0].title, // equal
       content: payload[0].content // equal
@@ -153,11 +147,11 @@ const actions = {
     })
       .then(result => {
         console.log(result.data)
-        alert('Your Question Successfully updated')
+        swal('Updated', 'Your Question Successfully updated', 'success')
         // commit('set', result.data)
       })
       .catch(err => {
-        console.log('INI ERROR >> ' + err)
+        console.log('THIS IS ERROR >> ' + JSON.stringify(err))
       })
   },
   deleteData ({ commit }, payload) {
@@ -166,21 +160,19 @@ const actions = {
       url: `http://localhost:3000/question/`,
       headers: { 'token': localStorage.getItem('token') },
       data: {
-        id: payload[0],
-        id_question: payload[1]
+        id: payload.id_user,
+        id_question: payload.id_question
       }
     })
-      .then(data => {
-        alert('delete data >> ' + JSON.stringify(data))
-        console.log('ini data', data.data)
+      .then(({data}) => {
+        console.log('ini data', data)
       })
       .catch(err => {
-        alert('Failed to remove data form database')
+        swal('ERROR DELETE', 'Failed to remove data form database', 'error')
         console.log(err)
       })
   },
-  voteUpData ({ commit }, payload) {
-    alert(JSON.stringify(payload))
+  voteUpData ({ commit, dispatch }, payload) {
     axios({
       method: 'post',
       url: `http://localhost:3000/question/voteup`,
@@ -190,17 +182,17 @@ const actions = {
         id_question: payload.id_question
       }
     })
-      .then(result => {
-        alert(payload.question)
-        alert(JSON.stringify(result))
-      })
-      .catch(err => {
-        alert(JSON.stringify(err))
-        console.log(err)
-      })
+    .then(result => {
+      dispatch('getSingleQuestion', payload.id_question)
+      dispatch('getUserQuestion', payload.id_user)
+      commit('setGetData', result.data)
+    })
+    .catch(err => {
+      alert(JSON.stringify(err))
+      console.log(err)
+    })
   },
-  voteDownData ({ commit }, payload) {
-    alert(JSON.stringify(payload))
+  voteDownData ({ commit, dispatch }, payload) {
     axios({
       method: 'post',
       url: `http://localhost:3000/question/votedown`,
@@ -210,12 +202,14 @@ const actions = {
         id_question: payload.id_question
       }
     })
-      .then(result => {
-        alert(JSON.stringify(result))
-      })
-      .catch(err => {
-        alert(JSON.stringify(err))
-      })
+    .then(result => {
+      dispatch('getSingleQuestion', payload.id_question)
+      dispatch('getUserQuestion', payload.id_user)
+      commit('setGetData', result.data)
+    })
+    .catch(err => {
+      alert(JSON.stringify(err))
+    })
   },
   getAllAnswer ({ commit }, payload) {
     axios.get(`http://localhost:3000/answer/find/${payload}`)
@@ -228,7 +222,7 @@ const actions = {
     })
   },
   postAnswer ({ dispatch, commit }, payload) {
-    console.log('ini payload answer', JSON.stringify(payload))
+    console.log('this is payload answer', JSON.stringify(payload))
     axios.post(`http://localhost:3000/answer/`, {
       id: payload.userId,
       content: payload.answer,
@@ -243,16 +237,13 @@ const actions = {
         swal('Please Sign In', 'Sign in to Post Answer', 'warning')
       } else {
         axios.get(`http://localhost:3000/answer/find/${payload.questionId}`)
-          .then(({ data }) => {
-            console.log(data)
-            commit('setAnswerData', data)
-          })
-        console.log('ini dataAnswer', dataAnswer.data)
+        .then(({ data }) => {
+          commit('setAnswerData', data)
+        })
       }
     })
   },
   deleteAnswer ({commit}, payload) {
-    alert('PAYLOAD DELETE ANSWER ' + JSON.stringify(payload))
     axios({
       method: 'delete',
       url: `http://localhost:3000/answer/${payload[1]}`,
@@ -312,7 +303,7 @@ const actions = {
       password: payload.password
     })
     .then(response => {
-      console.log('ini response login ', response.data.token)
+      console.log('this is login response  ', response.data.token)
       localStorage.setItem('token', response.data.token)
       axios.get('http://localhost:3000/users/info', {
         headers: {
@@ -335,7 +326,6 @@ const actions = {
     })
   },
   signup ({ commit }, payload) {
-    alert(JSON.stringify(payload))
     axios.post('http://localhost:3000/users', {
       username: payload.username,
       password: payload.password,
@@ -365,11 +355,14 @@ const actions = {
         if (result.data.id) {
           commit('setLogin', { objToken: {token: localStorage.token}, objUser: result.data })
         } else {
+          swal('SIGN IN', 'Please Sign in again', 'error')
+          localStorage.clear()
           this.$router.push('/')
         }
       })
       .catch(err => {
         alert('Error get user INFO')
+        localStorage.clear()
         console.log(err)
       })
   }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light transparent">
       <div class="container-fluid">
           <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
@@ -23,16 +23,7 @@
                     ><p>YOUR QUESTION</p>
                     </router-link>
                   </li>
-                  <!-- <li>
-                    <router-link 
-                    v-if="dataLogin.status" 
-                    :to="userData.username+'/edit'"
-                    @click.native=" $emit('showUserQuestion')"
-                    ><p>YOUR QUESTION</p>
-                    </router-link>
-                  </li> -->
                   <li>
-                      <!-- <div class="center-block"> -->
                       <div class="col-sm-12 col-sm-offset-3 col-md-offset-6" style="margin-bottom:10px;">
                           <h2 style="color:Black">HACKTIV-VUEX-OVERFLOW</h2>
                       </div>
@@ -47,7 +38,7 @@
               <a @click="$emit('openSignUp')" v-if="!dataLogin.status">SIGN UP</a>
             </li>
             <li>
-              <a @click="logout()" v-if="dataLogin.status">Logout</a>
+              <a @click="logout()" v-if="dataLogin.status">LOGOUT</a>
             </li>
           </ul>
       </div>
@@ -86,7 +77,6 @@ export default {
       self.dataLogin.status = false
       self.userData.username = null
       self.userData.id = null
-      // self.token = null
       localStorage.clear()
       this.$router.push('/')
       this.$emit('showHome')
@@ -102,7 +92,9 @@ a:hover{
   cursor:pointer;
 }
 .navbar {
-  width: 100%
+  width: 100%;
+  background-color: transparent;
+  border: 1px #222;
 }
 .navbar-collapse {
   text-align:center;
@@ -113,6 +105,16 @@ a:hover{
 }
 h2 {
   font-family:  Architects Daughter;
+}
+p, a{
+color: #19364C;
+}
+.transparent{    
+    background-color: rgba(0,0,0,0.15);
+}
+.panel{
+    background-color: transparent;
+    border: 1px #222;
 }
 
 </style>

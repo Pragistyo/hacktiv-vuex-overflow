@@ -19,9 +19,9 @@ router.delete('/userData/:id', jwt.isLogin, jwt.authUser, questionController.rem
 
 router.post('/answer', jwt.isLogin, questionController.answer)
 
-router.post('/voteup', jwt.isLogin, questionController.voteUp)
-router.post('/votedown', jwt.isLogin, questionController.voteDown)
+router.post('/voteup', jwt.isLogin, questionController.voteUp, questionController.findAll)
+router.post('/votedown', jwt.isLogin, questionController.voteDown, questionController.findAll)
 
-router.delete('/apus', questionController.pullAnswer)
+router.delete('/pullAnswer', questionController.pullAnswer)
 
 module.exports = router;

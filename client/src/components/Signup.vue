@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-md-6 col-md-offset-3">
+    <div class="col-md-6 col-md-offset-3 transparent">
       <form v-on:submit.prevent="userSignup" class="form-horizontal">
         <div class="modal-header">
         <h2><strong>Sign Up</strong></h2>

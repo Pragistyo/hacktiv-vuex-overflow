@@ -8,20 +8,23 @@
   <!-- <p>{{userQuestion}}</p> -->
   <div class="row">
     <div class="col-md-6 col-md-offset-3 col-xs-8 col-xs-offset-2">
-        <div v-for="(item,index) in userQuestion" :key="">
-            <div class="panel panel-primary">
-              <div class="panel panel-heading">
-                <h1>{{item.title}}</h1>
+        <div v-for="(item,index) in userQuestion" :key="item._id">
+            <div class="panel panel-secondary">
+              <div class="panel-heading transparent">
+                <legend><h3>{{item.title}}</h3></legend>
               </div>
-              <div class="panel-body">
-                <legend>
-                  <h2>Author:  {{item.id_user[0].username}}</h2>
-                </legend>
+              <div class="panel-body transparent">
                 <p>{{item.content}}</p>
-                <button class="btn btn-default fa fa-thumbs-up">
-                {{item.vote_up.length}}</button>
-                <button class="btn btn-default fa fa-thumbs-down">
-                {{item.vote_down.length}}</button>
+                <button 
+                class="btn btn-secondary fa fa-thumbs-up"
+                @click="voteUpQ({id_user:userData.id,id_question:item._id})">
+                {{item.vote_up.length}}
+                </button>
+                <button 
+                class="btn btn-secondary fa fa-thumbs-down"
+                @click="voteDownQ({id_user:userData.id,id_question:item._id})">
+                {{item.vote_down.length}}
+                </button>
                 <!-- <router-link :to="{name: 'EditParams', params:{id:item.id_user[0].username,answer:item._id}}"> -->
                 <router-link :to="item.id_user[0].username + '/edit/' + item._id">
                 <button 
@@ -38,8 +41,8 @@
                 </button>
                 <router-link :to="{name: 'AnswerParams', params: {id:item._id}}">
                   <button 
-                  class="btn btn-primary fa fa-reply"
-                  > ANSWER: {{item.answer.length}}
+                  class="btn btn-outline-primary fa fa-reply"
+                  > REPLY: {{item.answer.length}}
                   </button>
                 </router-link>
               </div>
@@ -52,21 +55,18 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import swal from 'sweetalert'
 export default {
   data () {
     return {
-      form: {
-        title: '',
-        question: ''
-      }
     }
   },
   computed: {
     ...mapState({
       userQuestion: 'userQuestion',
       userData: 'userData',
-      loginStatus: 'loginStatus',
-      formEdit: 'formEdit'
+      // formEdit: 'formEdit',
+      loginStatus: 'loginStatus'
     })
   },
   methods: {
@@ -74,19 +74,33 @@ export default {
       'getUserQuestion',
       'postData',
       'checkLogin',
-      'getSingleQuestion'
+      'getSingleQuestion',
+      'voteUpData',
+      'voteDownData'
     ]),
-    post () { // ga kepake
-      this.postData(this.form)
-    },
     updateQuestion (objQuestion, index, userId, questionId) {
-      // alert('masuk update')
       this.getSingleQuestion(questionId)
-      this.formEdit.title = objQuestion.title
-      this.formEdit.content = objQuestion.content
-      this.formEdit.userId = userId
-      this.formEdit.questionId = questionId
+      // this.formEdit.title = objQuestion.title
+      // this.formEdit.content = objQuestion.content
+      // this.formEdit.userId = userId
+      // this.formEdit.questionId = questionId
       this.formEdit.fromRouter = `/${this.userData.username}`
+    },
+    voteUpQ (params) {
+      alert(JSON.stringify(params))
+      if (params.id_user) { // ceknya pake headers token
+        this.voteUpData(params)
+      } else {
+        swal('Please Login', 'You must login to vote answer', 'warning')
+      }
+    },
+    voteDownQ (params) {
+      alert(JSON.stringify(params))
+      if (params.id_user) { // ceknya pake headers token
+        this.voteDownData(params)
+      } else {
+        swal('Please Login', 'You must login to vote answer', 'warning')
+      }
     }
   },
   created: function () {
@@ -104,5 +118,17 @@ export default {
 }
 </script>
 <style>
+.transparent{    
+    background-color: rgba(0,0,0,0.15);
+}
+.panel{
+    background-color: transparent;
+    border: 1px #222;
+}
+h3 {
+  color: #19364C;
+  /* font-family: Architects Daughter; */
+  font-family: Gruppo;
+}
 </style>
 

@@ -1,7 +1,7 @@
 <template>
   <!-- <div class="modal-dialog"> -->
     <div class="row">
-      <div class="col-xs-6 col-xs-offset-3">
+      <div class="col-xs-6 col-xs-offset-3 transparent">
     <!-- <div class="modal-content"> -->
       <!-- <form v-on:submit.prevent="userLogin()"> -->
           <div class="modal-header">
@@ -34,7 +34,6 @@ import { mapState, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      // showModal: false,
       form: {
         username: '',
         password: ''
@@ -74,6 +73,9 @@ padding-bottom: 20px;
 }
 label {
   font-family: Gruppo;
+}
+.transparent{    
+    background-color: rgba(0,0,0,0.15);
 }
 
 </style>

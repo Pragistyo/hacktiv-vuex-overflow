@@ -6,11 +6,6 @@
     @showHome=" signUpForm=false, loginForm=false, postQuestion= true"
     @showUserQuestion="allQuestion=false"
     ></Navbar>
-    <!-- <div class="row" v-if="userData.username && userData.username != 'undefined' && helloFlag">
-      <legend class="col-md-6 col-md-offset-3" style="color:black">
-        <h1  class="hello"> Hello : {{userData.username}} !</h1>
-      </legend>
-    </div> -->
     <h1>{{nama}}</h1>
     <Login v-if="loginForm" @closeLogin=" loginForm=false, postQuestion= true"></Login>
     <SignUp v-if="signUpForm" @closeSignUp=" signUpForm=false, postQuestion= true"></SignUp>

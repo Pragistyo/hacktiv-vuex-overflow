@@ -3,44 +3,22 @@
   <div class="row">
       <div class="col-md-6 col-md-offset-3 col-xs-8 col-xs-offset-2">
         <div>
-          <h1 class="helloAnswer">Answer</h1>
+          <h1 class="helloAnswer">Discussion</h1>
         </div>
         <!-- PANEL QUESTION -->
-        <!-- <p>{{singleQuestion}}</p> -->
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            <legend>
-              <h2 style="margin-top:-10px">{{singleQuestion.title}}</h2>
-            </legend>
-            <h3 style="margin-top:-10px; color:teal">
-              Author: {{singleQuestion.id_user[0].username}}
-            </h3>
-          </div>
-          <div class="panel-body">
-            <p>{{singleQuestion.content}}</p>
-          </div>
-          <div>
-            <router-link :to="'/' +singleQuestion.id_user[0].username + '/edit/' + singleQuestion._id">
-            <!-- <router-link :to="singleQuestion.id_user[0].username"> -->
-              <button 
-              v-if = "userData.id == singleQuestion.id_user[0]._id"
-              @click= "updateQuestion(singleQuestion._id)"
-              class="btn btn-info fa fa-pencil-square-o">
-                EDIT
-              </button>
-            </router-link>
-          </div><br>
-        </div>
+        <question-detail :id='id'></question-detail>
         <!-- FORM ANSWER -->
         <PostAnswer :id="id"></PostAnswer>
         <!-- PANEL ALL ANSWER -->
         <div class="panel panel-warning" v-for="(answer,index) in answerQuestion" :key="index"><!-- v-for answer di sini -->
-          <div class="panel-heading"> <!-- HEADER -->
-            <h3 style="margin-top:-7px">Answer Author: {{answer.id_user.username}}</h3> <!-- Isi sama author answer -->
+          <div class="panel-heading transparent"> <!-- HEADER -->
+            <h3 
+            style="margin-top:-7px;margin-bottom:-7px;color:teal">
+            Answer By: {{answer.id_user.username}}
+            </h3> <!-- Isi sama author answer -->
           </div>
-          <div class="panel-body"> <!-- BODY -->
+          <div class="panel-body transparent"> <!-- BODY -->
               <p>{{answer.content}}</p>
-              <!-- <p>answer ID: {{answer._id}}</p> -->
               <div>                                                                                                                               
                 <button 
                 class="btn btn-default fa fa-thumbs-up"
@@ -64,8 +42,8 @@
 </template>
 
 <script>
-import Navbar from '@/components/Navbar'
 import PostAnswer from '@/components/PostAnswer'
+import QuestionDetail from '@/components/QuestionDetail'
 import {mapState, mapActions} from 'vuex'
 import swal from 'sweetalert'
 export default {
@@ -75,14 +53,14 @@ export default {
     }
   },
   mounted: function () {
-    this.getSingleQuestion(this.id)
+    // this.getSingleQuestion(this.id)
     this.getAllAnswer(this.id)
     if (localStorage.token) {
       this.checkLogin()
     }
   },
   components: {
-    Navbar,
+    QuestionDetail,
     PostAnswer
   },
   computed: {
@@ -96,10 +74,8 @@ export default {
   },
   methods: {
     ...mapActions([
-      'postAnswer',
       'checkLogin',
       'getAllAnswer',
-      'getSingleQuestion',
       'deleteAnswer',
       'voteUpAnswer',
       'voteDownAnswer'
@@ -127,19 +103,22 @@ export default {
     }
   },
   watch: {
-    // id: function (semogaCepetLulus) {
-    //   this.getAllAnswer(this.id)
-    //   this.getSingleQuestion(this.id)
-    // }
   }
 }
 </script>
 <style scoped>
 .helloAnswer {
-   background-image: linear-gradient(to right, red, orange 20%, brown);
+  background-image: linear-gradient(to right, red, orange 20%, brown);
   color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
+}
+.transparent{    
+    background-color: rgba(0,0,0,0.15);
+}
+.panel{
+    background-color: transparent;
+    border: 1px #222;
 }
 </style>
 

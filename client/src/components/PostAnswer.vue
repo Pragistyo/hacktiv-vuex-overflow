@@ -24,9 +24,6 @@ export default {
   props: ['id'],
   data () {
     return {
-      // formAns: {
-      //   answer: null
-      // }
     }
   },
   computed: {
@@ -79,7 +76,12 @@ export default {
 // {timestamps:true})
 </script>
 <style scoped>
-
+.row {
+  margin-bottom:30px;
+}
+.transparent{    
+    background-color: rgba(0,0,0,0.15);
+}
 </style>
 
 

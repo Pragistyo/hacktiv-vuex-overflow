@@ -92,7 +92,7 @@ class userController {
         res.send({token:token,msg:'berhasil'})
       }else{
         res.send(
-          'password salah'
+          'Wrong Password'
         )
       }
     })

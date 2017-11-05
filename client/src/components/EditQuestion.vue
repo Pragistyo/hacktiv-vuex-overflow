@@ -1,8 +1,8 @@
 <template>
-  <div id="editQ">
+  <div id="editQ" >
     <div class="row">
       <!-- <p>{{ singleQuestion._id }}</p> -->
-        <div class="col-md-6 col-md-offset-3 col-xs-8 col-xs-offset-2">
+        <div class="col-md-6 col-md-offset-3 col-xs-8 col-xs-offset-2 transparent">
             <form v-on:submit.prevent="update" class="form-horizontal">
               <fieldset>
                   <label class="pull-left" style="font-size:22px; padding-top:20px; text-decoration:underline"> Edit Question: </label><br>
@@ -78,4 +78,10 @@ export default {
   }
 }
 </script>
+<style scoped>
+.transparent{    
+    background-color: rgba(0,0,0,0.15);
+}
+</style>
+
 

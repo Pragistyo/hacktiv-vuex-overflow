@@ -17,6 +17,7 @@ class questionController {
       res.send(err)
     })
   }
+
   static findById (req,res) {
     question.find({id_user:req.locals.id})
     .populate('id_user','_id username email')
@@ -28,6 +29,7 @@ class questionController {
       res.send(err)
     })
   }
+
   static findByQuestionId (req,res) {
     question.findOne({_id:req.params.id})
     .populate('id_user','_id username email')
@@ -40,9 +42,7 @@ class questionController {
     })
   }
 
-
   static create (req,res) {
-    // console.log('BLABLA');
     question.create({
       id_user:req.locals.id,
       title: req.body.title,
@@ -56,6 +56,7 @@ class questionController {
       res.send(err)
     })
   }
+  
   static edit (req,res) {
     question.findOneAndUpdate(
       {_id:req.body.id_question,id_user:req.locals.id},
@@ -71,11 +72,9 @@ class questionController {
       res.send(err)
     })
   }
+
   static remove (req,res) {
     // res.send('REQ BODY---> '+ req.body)
-    // answer.remove({ id_question: req.body.id_question})
-    // .then(result =>{
-    //   res.send(result)
     question.remove({_id:req.body.id_question})
     .then(result=>{
       console.log(result);
@@ -107,19 +106,19 @@ class questionController {
     .catch(err=>{res.send(err)})
   }
 
-  static voteUp (req,res) {
+  static voteUp (req,res,next) {
     question.findOneAndUpdate(
       {_id:req.body.id_question},
       {$pull:{vote_down:req.body.id}}
     )
-    .then(result=>{
-      // res.send(result)
+    .then(resultPull=>{
       question.findOneAndUpdate(
         { _id: req.body.id_question },
         {$addToSet: { vote_up: req.body.id }}
       )
-        .then(result => {
-          res.send(result)
+        .then(resultPush => {
+          next()
+          // res.send(resultPush)
         })
         .catch(err => {
           res.send(err)
@@ -130,19 +129,19 @@ class questionController {
     })
   }
 
-  static voteDown (req,res) {
+  static voteDown (req,res,next) {
     question.updateOne(
       { _id: req.body.id_question },
       { $pull: { vote_up: req.body.id } }
     )
-    .then(result=>{
-      // res.send(result)
+    .then(resultPull =>{
       question.updateOne(
         { _id: req.body.id_question },
         { $addToSet: { vote_down: req.body.id } }
       )
-        .then(result => {
-          res.send(result)
+        .then(resultPush => {
+          next()
+          // res.send(resultPush)
         })
         .catch(err => {
           res.send(err)
@@ -155,10 +154,10 @@ class questionController {
   
   static pullAnswer (req,res) {
     question.update(
-    { _id: req.body.id},
+    { _id: req.body.id}, //id question
     { 
       // $pop: { answer: 1}
-      $pull: {answer: req.body.apus}
+      $pull: {answer: req.body.id_answer}
     })
     .then(hasil => {
       res.send(hasil)
