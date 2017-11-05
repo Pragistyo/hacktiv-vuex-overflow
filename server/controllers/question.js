@@ -110,12 +110,20 @@ class questionController {
   static voteUp (req,res) {
     question.findOneAndUpdate(
       {_id:req.body.id_question},
-      {
-        $addToSet:{vote_down:req.body.id} //req.body.id itu dr local
-      }
+      {$pull:{vote_down:req.body.id}}
     )
     .then(result=>{
-      res.send(result)
+      // res.send(result)
+      question.findOneAndUpdate(
+        { _id: req.body.id_question },
+        {$addToSet: { vote_up: req.body.id }}
+      )
+        .then(result => {
+          res.send(result)
+        })
+        .catch(err => {
+          res.send(err)
+        })
     })
     .catch(err=>{
       res.send(err)
@@ -124,13 +132,21 @@ class questionController {
 
   static voteDown (req,res) {
     question.updateOne(
-      {_id:req.body.id},
-      {
-        $addToSet:{vote_down:req.body.id}
-      }
+      { _id: req.body.id_question },
+      { $pull: { vote_up: req.body.id } }
     )
     .then(result=>{
-      res.send(result)
+      // res.send(result)
+      question.updateOne(
+        { _id: req.body.id_question },
+        { $addToSet: { vote_down: req.body.id } }
+      )
+        .then(result => {
+          res.send(result)
+        })
+        .catch(err => {
+          res.send(err)
+        })
     })
     .catch(err=>{
       res.send(err)

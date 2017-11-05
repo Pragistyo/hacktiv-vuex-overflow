@@ -179,6 +179,44 @@ const actions = {
         console.log(err)
       })
   },
+  voteUpData ({ commit }, payload) {
+    alert(JSON.stringify(payload))
+    axios({
+      method: 'post',
+      url: `http://localhost:3000/question/voteup`,
+      headers: { 'token': localStorage.getItem('token') },
+      data: {
+        id: payload.id_user,
+        id_question: payload.id_question
+      }
+    })
+      .then(result => {
+        alert(payload.question)
+        alert(JSON.stringify(result))
+      })
+      .catch(err => {
+        alert(JSON.stringify(err))
+        console.log(err)
+      })
+  },
+  voteDownData ({ commit }, payload) {
+    alert(JSON.stringify(payload))
+    axios({
+      method: 'post',
+      url: `http://localhost:3000/question/votedown`,
+      headers: { 'token': localStorage.getItem('token') },
+      data: {
+        id: payload.id_user,
+        id_question: payload.id_question
+      }
+    })
+      .then(result => {
+        alert(JSON.stringify(result))
+      })
+      .catch(err => {
+        alert(JSON.stringify(err))
+      })
+  },
   getAllAnswer ({ commit }, payload) {
     axios.get(`http://localhost:3000/answer/find/${payload}`)
     .then(({data}) => {
@@ -217,23 +255,56 @@ const actions = {
     alert('PAYLOAD DELETE ANSWER ' + JSON.stringify(payload))
     axios({
       method: 'delete',
-      url: `http://localhost:3000/answer/destroy`,
+      url: `http://localhost:3000/answer/${payload[1]}`,
       headers: { 'token': localStorage.getItem('token') },
       data: {
-        id: payload[0],
-        id_answer: payload[1]
+        id: payload[0]
       }
     })
     .then(result => {
-      alert(JSON.stringify(result))
-      alert(result)
-      // alert('delete answer >> ' + JSON.stringify(result))
+      swal('DELETED', 'your answer already deleted', 'success')
       console.log('ini delete answer', result.data)
     })
     .catch(err => {
       alert(err)
       console.log(err)
     })
+  },
+  voteUpAnswer ({commit}, payload) {
+    axios({
+      method: 'post',
+      url: `http://localhost:3000/answer/voteup/${payload.id_question}`,
+      headers: { 'token': localStorage.getItem('token') },
+      data: {
+        id: payload.id_user,
+        id_answer: payload.id_answer
+      }
+    })
+    .then(result => {
+      commit('setAnswerData', result.data)
+    })
+    .catch(err => {
+      console.log('ERROR VOTE UP ANSWER ', err)
+      alert('ERROR VOTE UP ANSWER ' + JSON.stringify(err))
+    })
+  },
+  voteDownAnswer ({ commit }, payload) {
+    axios({
+      method: 'post',
+      url: `http://localhost:3000/answer/votedown/${payload.id_question}`,
+      headers: { 'token': localStorage.getItem('token') },
+      data: {
+        id: payload.id_user,
+        id_answer: payload.id_answer
+      }
+    })
+      .then(result => {
+        commit('setAnswerData', result.data)
+      })
+      .catch(err => {
+        console.log('ERROR VOTE UP ANSWER' + err)
+        alert('ERROR VOTE UP ANSWER ' + JSON.stringify(err))
+      })
   },
   login ({ commit }, payload) {
     axios.post('http://localhost:3000/users/login', {

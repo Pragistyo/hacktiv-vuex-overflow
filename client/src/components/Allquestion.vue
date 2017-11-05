@@ -17,10 +17,16 @@
                     <!-- <p>{{item.content}}</p> -->
                   <!-- </div> -->
                   <div class="col-sm-12">
-                    <button class="btn btn-secondary fa fa-thumbs-up">
-                    {{item.vote_up.length}}</button>
-                    <button class="btn btn-secondary fa fa-thumbs-down">
-                    {{item.vote_down.length}}</button>
+                    <button 
+                    class="btn btn-secondary fa fa-thumbs-up"
+                    @click="voteUp({id_user:userData.id,id_question:item._id})">
+                    {{item.vote_up.length}}
+                    </button>
+                    <button 
+                    class="btn btn-secondary fa fa-thumbs-down"
+                    @click="voteDown({id_user:userData.id,id_question:item._id})">
+                    {{item.vote_down.length}}
+                    </button>
                     <!-- {{item.id_user[0].username}} -->
                     <!-- <router-link :to="{name: 'EditParams', params:{id:item.id_user[0].username, question:item._id}}"> -->
                     <!-- <router-link :to="item.id_user[0].username + '/edit/' + item._id">
@@ -55,6 +61,7 @@
 
 <script>
 import {mapState, mapActions} from 'vuex'
+import swal from 'sweetalert'
 import PostQuestion from '@/components/PostQuestion'
 import HelloUser from '@/components/HelloUser'
 export default {
@@ -78,7 +85,9 @@ export default {
     ...mapActions([
       'getData',
       'getSingleQuestion',
-      'deleteData'
+      'deleteData',
+      'voteUpData',
+      'voteDownData'
     ]),
     deleteQuestion (index, userId, questionId) {
       this.deleteData([userId, questionId])
@@ -95,6 +104,22 @@ export default {
       this.formAns.userId = objQuestion.id_user
       this.formAns.questionId = objQuestion._id
       this.formAns.fromRouter = '/'
+    },
+    voteUp (params) {
+      alert(JSON.stringify(params))// ceknya pake headers token
+      if (params.id_user) {
+        this.voteUpData(params)
+      } else {
+        swal('Please Login', 'You must login to vote answer', 'warning')
+      }
+    },
+    voteDown (params) {
+      alert(JSON.stringify(params))// ceknya pake headers token
+      if (params.id_user) {
+        this.voteDownData(params)
+      } else {
+        swal('Please Login', 'You must login to vote answer', 'warning')
+      }
     }
   },
   created: function () {

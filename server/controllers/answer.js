@@ -7,30 +7,6 @@ class answerController {
 
   }
 
-  // static findById (req,res) {
-  //   if(req.body.id_question) {
-  //     answer.find({id_user:req.locals.id,id_question:req.body.id_question})
-  //     .populate('id_user')
-  //     .populate('id_question','_id title content')
-  //     .then(result=>{
-  //       res.send(result)
-  //     })
-  //     .catch(err=>{
-  //       res.send(err)
-  //     })
-  //   }else{
-  //     answer.find({id_user:req.body.id})
-  //     .populate('id_user')
-  //     .populate('id_question','_id title content')
-  //     .then(result=>{
-  //       res.send(result)
-  //     })
-  //     .catch(err=>{
-  //       res.send(err)
-  //     })
-  //   }
-  // }
-
   static findByIdQuestion (req,res) {
     // console.log('====================================');
     // console.log(req.params);
@@ -41,6 +17,8 @@ class answerController {
     .populate({path:'id_user', select: '_id username email'})
     .populate('id_question')
     .then(result => {
+      console.log(result);
+      // res.send('hahaha')
       res.send(result)
     })
     .catch(err =>{
@@ -71,39 +49,68 @@ class answerController {
   }
 
 
-  static voteUp (req,res) {
-    answer.findOneAndUpdate({
-      $addToSet: {vote_up:req.body.id}
-    },{_id:req.body.id_answer})
+// find answer by id 
+// select array vote down
+// if array is zero, vote up
+// loop array vote down, if already vote, res.send(msg)
+// if not vote down, vote up
+
+  static voteUp (req,res,next) {
+    answer.findOneAndUpdate(
+      {_id: req.body.id_answer},
+      {$pull: { vote_down: req.body.id }}
+    )
     .then(result=>{
-      res.send(result)
+      answer.findOneAndUpdate(
+        { _id: req.body.id_answer },
+        { $addToSet: { vote_up: req.body.id } }
+      )
+        .then(result => {
+          console.log('OGI +++++ ', result)
+          // answerController.findByIdQuestion
+          next()
+          // res.send(result)
+        })
+        .catch(err => {
+          res.send(err)
+        })
     })
     .catch(err=>{
       res.send(err)
     })
   }
 
-  static voteDown (req,res) {
+  static voteDown (req,res,next) {
     answer.findOneAndUpdate(
-      {_id:req.body.id_answer},
-      {$addToSet:{vote_down:req.body.id}})
-    .then(result=>{
-      res.send(resut)
-    })
-    .catch(err=>{
-      res.send(err)
-    })
+      { _id: req.body.id_answer },
+      { $pull: { vote_up: req.body.id } }
+    )
+      .then(result => {
+        answer.findOneAndUpdate(
+          { _id: req.body.id_answer },
+          { $addToSet: { vote_down: req.body.id } }
+        )
+          .then(result => {
+            next()
+            // res.send(result)
+          })
+          .catch(err => {
+            res.send(err)
+          })
+      })
+      .catch(err => {
+        res.send(err)
+      })
   }
 
   static remove (req,res) {
-    res.send('ogi')
-    // answer.remove({_id:req.params.id})
-    // .then(result => {
-    //   res.send(result)
-    // })
-    // .catch(err => {
-    //   res.send(err)
-    // })
+    answer.remove({_id:req.params.id})
+    .then(result => {
+      res.send(result)
+    })
+    .catch(err => {
+      res.send(err)
+    })
   }
 
   static alls (req,res) {

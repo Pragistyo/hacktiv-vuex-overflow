@@ -41,11 +41,14 @@
           <div class="panel-body"> <!-- BODY -->
               <p>{{answer.content}}</p>
               <!-- <p>answer ID: {{answer._id}}</p> -->
-              <!-- <p>user ID: {{answer}}</p> -->
               <div>                                                                                                                               
-                <button class="btn btn-default fa fa-thumbs-up">
+                <button 
+                class="btn btn-default fa fa-thumbs-up"
+                @click="voteUp({id_user:userData.id,id_answer:answer._id,id_question:answer.id_question._id},index)">
                 {{answer.vote_up.length}}</button>
-                <button class="btn btn-default fa fa-thumbs-down">
+                <button 
+                class="btn btn-default fa fa-thumbs-down"
+                @click="voteDown({id_user:userData.id,id_answer:answer._id,id_question:answer.id_question._id},index)">
                 {{answer.vote_down.length}}</button>
                 <button 
                 class="btn btn-danger fa fa-trash"
@@ -64,6 +67,7 @@
 import Navbar from '@/components/Navbar'
 import PostAnswer from '@/components/PostAnswer'
 import {mapState, mapActions} from 'vuex'
+import swal from 'sweetalert'
 export default {
   props: ['id'],
   data () {
@@ -96,15 +100,30 @@ export default {
       'checkLogin',
       'getAllAnswer',
       'getSingleQuestion',
-      'deleteAnswer'
+      'deleteAnswer',
+      'voteUpAnswer',
+      'voteDownAnswer'
     ]),
     updateQuestion (questionId) {
       this.getSingleQuestion(questionId)
     },
     deleteThisAnswer (arrParams, index) {
-      alert(index)
       this.deleteAnswer(arrParams)
       this.answerQuestion.splice(index, 1)
+    },
+    voteUp (params, indexAnswer) {
+      if (params.id_user) {
+        this.voteUpAnswer(params)
+      } else {
+        swal('Please Login', 'You must login to vote answer', 'warning')
+      }
+    },
+    voteDown (params, indexAnswer) {
+      if (params.id_user) {
+        this.voteDownAnswer(params)
+      } else {
+        swal('Please Login', 'You must login to vote answer', 'warning')
+      }
     }
   },
   watch: {
