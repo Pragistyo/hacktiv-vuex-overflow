@@ -66,7 +66,7 @@ const mutations = {
         username: payload.objUser.username
       }
     } else {
-      alert('sampe sini')
+      localStorage.clear()
       swal(`${payload.objToken}`, '', 'error')
     }
   },
@@ -83,7 +83,7 @@ const actions = {
   getData ({ commit }) {
     axios.get('http://localhost:3000/question/all')
     .then(({data}) => {
-      console.log('ini data question' + JSON.stringify(data))
+      console.log('this is data question' + JSON.stringify(data))
       commit('setGetData', data)
     })
   },
@@ -94,7 +94,7 @@ const actions = {
       }
     })
     .then(({data}) => {
-      console.log('ini data single question' + JSON.stringify(data))
+      console.log('this is data single question' + JSON.stringify(data))
       commit('setSingleData', data)
     })
     .catch(err => {
@@ -112,7 +112,7 @@ const actions = {
     })
   },
   postData ({ commit }, payload) {
-    console.log('masuk post data ======')
+    console.log('enter post data ======')
     axios.post(`http://localhost:3000/question/`, {
       title: payload.title,
       content: payload.content
@@ -127,11 +127,11 @@ const actions = {
       } else if (data.name === 'JsonWebTokenError') {
         swal('PLEASE SIGN IN', 'You have to sign in to post a question', 'warning')
       }
-      console.log('ini data', data)
+      console.log('this is post data', data)
       commit('setPostData', data)
     })
     .catch(err => {
-      console.log(err + ' ============')
+      console.log('THIS IS ERROR POST DATA >> ' + JSON.stringify(err))
     })
   },
   updateData ({ commit }, payload) {
@@ -151,7 +151,7 @@ const actions = {
         // commit('set', result.data)
       })
       .catch(err => {
-        console.log('THIS IS ERROR >> ' + JSON.stringify(err))
+        console.log('THIS IS ERROR UPDATE DATA >> ' + JSON.stringify(err))
       })
   },
   deleteData ({ commit }, payload) {
@@ -169,7 +169,7 @@ const actions = {
       })
       .catch(err => {
         swal('ERROR DELETE', 'Failed to remove data form database', 'error')
-        console.log(err)
+        console.log('THIS IS ERROR DELETE DATA >> ' + JSON.stringify(err))
       })
   },
   voteUpData ({ commit, dispatch }, payload) {
@@ -189,7 +189,7 @@ const actions = {
     })
     .catch(err => {
       alert(JSON.stringify(err))
-      console.log(err)
+      console.log('THIS IS ERROR VOTE UP DATA >> ' + JSON.stringify(err))
     })
   },
   voteDownData ({ commit, dispatch }, payload) {
@@ -209,16 +209,17 @@ const actions = {
     })
     .catch(err => {
       alert(JSON.stringify(err))
+      console.log('THIS IS ERROR VOTE DOWN DATA >> ' + JSON.stringify(err))
     })
   },
   getAllAnswer ({ commit }, payload) {
     axios.get(`http://localhost:3000/answer/find/${payload}`)
     .then(({data}) => {
-      console.log(data)
+      console.log('this is delete answer', data)
       commit('setAnswerData', data)
     })
     .catch(err => {
-      console.log(err)
+      console.log('THIS IS ERROR GET ALL ANSWER BY ID QUESTION >> ' + JSON.stringify(err))
     })
   },
   postAnswer ({ dispatch, commit }, payload) {
@@ -236,11 +237,11 @@ const actions = {
       if (dataAnswer.data.name === 'JsonWebTokenError') {
         swal('Please Sign In', 'Sign in to Post Answer', 'warning')
       } else {
-        axios.get(`http://localhost:3000/answer/find/${payload.questionId}`)
-        .then(({ data }) => {
-          commit('setAnswerData', data)
-        })
+        dispatch('getAllAnswer', payload.questionId)
       }
+    })
+    .catch(err => {
+      console.log('THIS IS ERROR POST ANSWER >> ' + JSON.stringify(err))
     })
   },
   deleteAnswer ({commit}, payload) {
@@ -249,16 +250,17 @@ const actions = {
       url: `http://localhost:3000/answer/${payload[1]}`,
       headers: { 'token': localStorage.getItem('token') },
       data: {
-        id: payload[0]
+        id: payload[0],
+        id_question: payload[2]
       }
     })
     .then(result => {
       swal('DELETED', 'your answer already deleted', 'success')
-      console.log('ini delete answer', result.data)
+      console.log('this is delete answer', result.data)
     })
     .catch(err => {
       alert(err)
-      console.log(err)
+      console.log('THIS IS ERROR DELETE ANSWER>> ' + JSON.stringify(err))
     })
   },
   voteUpAnswer ({commit}, payload) {
@@ -275,7 +277,7 @@ const actions = {
       commit('setAnswerData', result.data)
     })
     .catch(err => {
-      console.log('ERROR VOTE UP ANSWER ', err)
+      console.log('ERROR VOTE UP ANSWER ', JSON.stringify(err))
       alert('ERROR VOTE UP ANSWER ' + JSON.stringify(err))
     })
   },
@@ -293,7 +295,7 @@ const actions = {
         commit('setAnswerData', result.data)
       })
       .catch(err => {
-        console.log('ERROR VOTE UP ANSWER' + err)
+        console.log('ERROR VOTE UP ANSWER' + JSON.stringify(err))
         alert('ERROR VOTE UP ANSWER ' + JSON.stringify(err))
       })
   },
@@ -318,7 +320,7 @@ const actions = {
       })
       .catch(err => {
         alert('Error get user INFO')
-        console.log(err)
+        console.log('THIS IS ERROR LOGIN >> ' + JSON.stringify(err))
       })
     })
     .catch(err => {
@@ -338,7 +340,7 @@ const actions = {
       commit('setSignup', response.data)
     })
     .catch(err => {
-      console.log(err)
+      console.log('THIS IS ERROR SIGN UP >> ' + JSON.stringify(err))
       alert('ERROR REGISTER' + err)
     })
   },
@@ -363,7 +365,7 @@ const actions = {
       .catch(err => {
         alert('Error get user INFO')
         localStorage.clear()
-        console.log(err)
+        console.log('THIS IS ERROR CHECK LOGIN >> ' + JSON.stringify(err))
       })
   }
 }

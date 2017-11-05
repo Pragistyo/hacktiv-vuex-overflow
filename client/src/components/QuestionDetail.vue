@@ -2,7 +2,7 @@
   <div class="panel panel-secondary">
           <div class="panel-heading transparent">
             <legend>
-              <!-- <P>{{singleQuestion}}</P> -->
+              <!-- <P>{{singleQuestion._id}}</P> -->
               <h3 style="margin-top:-10px">{{singleQuestion.title}}</h3>
               <h3 style="margin-top:-10px; color:teal">
                 Author: {{singleQuestion.id_user[0].username}}

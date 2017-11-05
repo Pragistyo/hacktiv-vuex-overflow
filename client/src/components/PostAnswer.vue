@@ -20,6 +20,7 @@
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
+import swal from 'sweetalert'
 export default {
   props: ['id'],
   data () {
@@ -45,6 +46,7 @@ export default {
       this.formAns.questionId = this.id // this.id === id_question
       this.formAns.username = this.userData.username
       this.postAnswer(this.formAns)
+      swal('Answer Posted', 'You post an answer', 'success')
       // this.getAllAnswer(this.id)
       this.clear()
     },

@@ -8,9 +8,6 @@ class answerController {
   }
 
   static findByIdQuestion (req,res) {
-    // console.log('====================================');
-    // console.log(req.params);
-    // console.log('====================================');
     answer.find({
       id_question:req.params.id_question
     })
@@ -18,7 +15,6 @@ class answerController {
     .populate('id_question')
     .then(result => {
       console.log(result);
-      // res.send('hahaha')
       res.send(result)
     })
     .catch(err =>{
@@ -26,28 +22,20 @@ class answerController {
     })
   }
 
-  static add (req,res) {
+  static add (req,res,next) {
     answer.create({
       id_user:req.locals.id,
       id_question:req.body.id_question,
       content: req.body.content
     })
     .then(result => {
-      console.log('=========== ogitampan ' + result);
-      question.update(
-                          {_id:req.body.id_question},//idQuestion
-                          {$push:{answer:result._id}})//idAnswer
-      .then(resultQuestion=>{
-        console.log('hahahahha ' + resultQuestion);
-        res.send(resultQuestion)
-      })
-      .catch(err=>{console.log(err)})
+      req.body.id_answer = result._id 
+      next()
     })
     .catch(err => {
       res.send(err)
     })
   }
-
 
 // find answer by id 
 // select array vote down
@@ -66,10 +54,8 @@ class answerController {
         { $addToSet: { vote_up: req.body.id } }
       )
         .then(result => {
-          console.log('OGI +++++ ', result)
-          // answerController.findByIdQuestion
+          console.log('+++++ ', result)
           next()
-          // res.send(result)
         })
         .catch(err => {
           res.send(err)
@@ -92,7 +78,6 @@ class answerController {
         )
           .then(result => {
             next()
-            // res.send(result)
           })
           .catch(err => {
             res.send(err)
@@ -103,10 +88,10 @@ class answerController {
       })
   }
 
-  static remove (req,res) {
+  static remove (req,res,next) {
     answer.remove({_id:req.params.id})
     .then(result => {
-      res.send(result)
+      next()
     })
     .catch(err => {
       res.send(err)
@@ -116,7 +101,7 @@ class answerController {
   static alls (req,res) {
     answer.find({})
     .populate('id_user')
-      .populate('id_question')
+    .populate('id_question')
     .then(result => {
       res.send(result)
     })

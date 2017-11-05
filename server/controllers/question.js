@@ -56,7 +56,7 @@ class questionController {
       res.send(err)
     })
   }
-  
+
   static edit (req,res) {
     question.findOneAndUpdate(
       {_id:req.body.id_question,id_user:req.locals.id},
@@ -66,7 +66,6 @@ class questionController {
     )
     .then(result=>{
       res.send(result)
-      // res.send('ok')
     })
     .catch(err=>{
       res.send(err)
@@ -74,7 +73,6 @@ class questionController {
   }
 
   static remove (req,res) {
-    // res.send('REQ BODY---> '+ req.body)
     question.remove({_id:req.body.id_question})
     .then(result=>{
       console.log(result);
@@ -83,27 +81,6 @@ class questionController {
     .catch(err=>{
       res.send(err)
     })
-  }
-
-  static answer (req,res) {
-    answer.create({
-        id_user: req.locals.id,
-        id_question: req.body.id_question,
-        content: req.body.content
-    })
-    .then(result=>{
-      question.updateOne(
-        {_id:result.id_question},
-        {
-          $push: {answer: result._id}
-        }
-      )
-      .then(result2=>{
-        res.send(result2)
-      })
-      .catch(err=>{res.send(err)})
-    })
-    .catch(err=>{res.send(err)})
   }
 
   static voteUp (req,res,next) {
@@ -151,13 +128,26 @@ class questionController {
       res.send(err)
     })
   }
-  
-  static pullAnswer (req,res) {
+
+  static pushAnswer (req,res) { // called in answer routes
     question.update(
-    { _id: req.body.id}, //id question
-    { 
+      { _id: req.body.id_question },//idQuestion
+      {
+        $push: { answer: req.body.id_answer }// idAnswer
+      })
+      .then(resultQuestion => {
+        console.log('hahahahha ' + JSON.stringify(resultQuestion))
+        res.send(resultQuestion)
+      })
+      .catch(err => { console.log(err) })
+  }
+  
+  static pullAnswer (req,res) { // called in answer routes
+    question.update(
+      { _id: req.body.id_question }, // id question
+      {
       // $pop: { answer: 1}
-      $pull: {answer: req.body.id_answer}
+        $pull: { answer: req.params.id } // id answer
     })
     .then(hasil => {
       res.send(hasil)

@@ -16,6 +16,7 @@
             style="margin-top:-7px;margin-bottom:-7px;color:teal">
             Answer By: {{answer.id_user.username}}
             </h3> <!-- Isi sama author answer -->
+            <!-- <p>{{answer._id}}</p> -->
           </div>
           <div class="panel-body transparent"> <!-- BODY -->
               <p>{{answer.content}}</p>
@@ -30,7 +31,7 @@
                 {{answer.vote_down.length}}</button>
                 <button 
                 class="btn btn-danger fa fa-trash"
-                @click="deleteThisAnswer([userData.id,answer._id], index)"
+                @click="deleteThisAnswer([userData.id,answer._id,id], index)"
                 v-if="userData.id === answer.id_user._id">
                 DELETE</button>
               </div>
@@ -47,7 +48,7 @@ import QuestionDetail from '@/components/QuestionDetail'
 import {mapState, mapActions} from 'vuex'
 import swal from 'sweetalert'
 export default {
-  props: ['id'],
+  props: ['id'], // id question
   data () {
     return {
     }
