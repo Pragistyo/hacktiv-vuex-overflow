@@ -6,7 +6,6 @@
     @showHome=" signUpForm=false, loginForm=false, postQuestion= true"
     @showUserQuestion="allQuestion=false"
     ></Navbar>
-    <h1>{{nama}}</h1>
     <Login v-if="loginForm" @closeLogin=" loginForm=false, postQuestion= true"></Login>
     <SignUp v-if="signUpForm" @closeSignUp=" signUpForm=false, postQuestion= true"></SignUp>
     <router-view 

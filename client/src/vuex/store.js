@@ -337,6 +337,7 @@ const actions = {
       if (response.data.errmsg) {
         swal('Duplicate !', 'Username and/or email already been used', 'error')
       }
+      swal('Now, Please Sign In', 'Register success', 'success')
       commit('setSignup', response.data)
     })
     .catch(err => {

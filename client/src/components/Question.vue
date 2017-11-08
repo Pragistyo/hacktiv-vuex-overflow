@@ -5,7 +5,7 @@
       <h1 class="title" style="color:teal">{{userData.username}} Question :</h1>
     </legend>
   </div>
-  <!-- <p>{{userQuestion}}</p> -->
+  <h1 v-if="userQuestion.length === 0">You don't have any question yet !</h1>
   <div class="row">
     <div class="col-md-6 col-md-offset-3 col-xs-8 col-xs-offset-2">
         <div v-for="(item,index) in userQuestion" :key="item._id">
