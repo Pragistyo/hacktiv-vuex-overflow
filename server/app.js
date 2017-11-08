@@ -59,7 +59,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 })
 
-app.listen(process.env.PORT || 3000, ()=>{
+app.listen(3000 || process.env.PORT, ()=>{
   console.log('3000 ATK OF BLUE EYES WHITE DRAGON')
 })
 

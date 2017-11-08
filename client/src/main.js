@@ -8,6 +8,7 @@ import store from './vuex/store'
 
 Vue.prototype.$http = axios.create({
   baseURL: 'http://localhost:3000/'
+  // baseURL: 'http://35.197.157.222/'
 })
 
 Vue.config.productionTip = false

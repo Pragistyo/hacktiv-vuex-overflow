@@ -5,6 +5,11 @@ import swal from 'sweetalert'
 
 vue.use(Vuex)
 
+vue.prototype.$http = axios.create({
+  // baseURL: 'http://localhost:3000/'
+  baseURL: 'http://35.197.157.222:3000/'
+})
+
 const state = {
   question: [],
   answerQuestion: [],
@@ -81,14 +86,14 @@ const mutations = {
 // ACTIONS
 const actions = {
   getData ({ commit }) {
-    axios.get('http://localhost:3000/question/all')
+    vue.prototype.$http.get('question/all')
     .then(({data}) => {
       console.log('this is data question' + JSON.stringify(data))
       commit('setGetData', data)
     })
   },
   getSingleQuestion ({commit}, payload) { // payload isi string id question
-    axios.get(`http://localhost:3000/question/${payload}`, {
+    vue.prototype.$http.get(`question/${payload}`, {
       headers: {
         token: localStorage.getItem('token')
       }
@@ -102,7 +107,7 @@ const actions = {
     })
   },
   getUserQuestion ({ commit }, payload) {
-    axios.get(`http://localhost:3000/question/userData/${payload}`, {
+    vue.prototype.$http.get(`question/userData/${payload}`, {
       headers: {
         token: localStorage.getItem('token')
       }
@@ -113,7 +118,7 @@ const actions = {
   },
   postData ({ commit }, payload) {
     console.log('enter post data ======')
-    axios.post(`http://localhost:3000/question/`, {
+    vue.prototype.$http.post(`question/`, {
       title: payload.title,
       content: payload.content
     }, {
@@ -135,7 +140,7 @@ const actions = {
     })
   },
   updateData ({ commit }, payload) {
-    axios.put(`http://localhost:3000/question/`, {
+    vue.prototype.$http.put(`question/`, {
       id: payload[0].id_user[0]._id,
       id_question: payload[0]._id,
       title: payload[0].title, // equal
@@ -155,9 +160,9 @@ const actions = {
       })
   },
   deleteData ({ commit }, payload) {
-    axios({
+    vue.prototype.$http({
       method: 'delete',
-      url: `http://localhost:3000/question/`,
+      url: `question/`,
       headers: { 'token': localStorage.getItem('token') },
       data: {
         id: payload.id_user,
@@ -173,9 +178,9 @@ const actions = {
       })
   },
   voteUpData ({ commit, dispatch }, payload) {
-    axios({
+    vue.prototype.$http({
       method: 'post',
-      url: `http://localhost:3000/question/voteup`,
+      url: `question/voteup`,
       headers: { 'token': localStorage.getItem('token') },
       data: {
         id: payload.id_user,
@@ -193,9 +198,9 @@ const actions = {
     })
   },
   voteDownData ({ commit, dispatch }, payload) {
-    axios({
+    vue.prototype.$http({
       method: 'post',
-      url: `http://localhost:3000/question/votedown`,
+      url: `question/votedown`,
       headers: { 'token': localStorage.getItem('token') },
       data: {
         id: payload.id_user,
@@ -213,7 +218,7 @@ const actions = {
     })
   },
   getAllAnswer ({ commit }, payload) {
-    axios.get(`http://localhost:3000/answer/find/${payload}`)
+    vue.prototype.$http.get(`answer/find/${payload}`)
     .then(({data}) => {
       console.log('this is delete answer', data)
       commit('setAnswerData', data)
@@ -224,7 +229,7 @@ const actions = {
   },
   postAnswer ({ dispatch, commit }, payload) {
     console.log('this is payload answer', JSON.stringify(payload))
-    axios.post(`http://localhost:3000/answer/`, {
+    vue.prototype.$http.post(`answer/`, {
       id: payload.userId,
       content: payload.answer,
       id_question: payload.questionId
@@ -245,9 +250,9 @@ const actions = {
     })
   },
   deleteAnswer ({commit}, payload) {
-    axios({
+    vue.prototype.$http({
       method: 'delete',
-      url: `http://localhost:3000/answer/${payload[1]}`,
+      url: `answer/${payload[1]}`,
       headers: { 'token': localStorage.getItem('token') },
       data: {
         id: payload[0],
@@ -264,9 +269,9 @@ const actions = {
     })
   },
   voteUpAnswer ({commit}, payload) {
-    axios({
+    vue.prototype.$http({
       method: 'post',
-      url: `http://localhost:3000/answer/voteup/${payload.id_question}`,
+      url: `answer/voteup/${payload.id_question}`,
       headers: { 'token': localStorage.getItem('token') },
       data: {
         id: payload.id_user,
@@ -282,9 +287,9 @@ const actions = {
     })
   },
   voteDownAnswer ({ commit }, payload) {
-    axios({
+    vue.prototype.$http({
       method: 'post',
-      url: `http://localhost:3000/answer/votedown/${payload.id_question}`,
+      url: `answer/votedown/${payload.id_question}`,
       headers: { 'token': localStorage.getItem('token') },
       data: {
         id: payload.id_user,
@@ -300,14 +305,14 @@ const actions = {
       })
   },
   login ({ commit }, payload) {
-    axios.post('http://localhost:3000/users/login', {
+    vue.prototype.$http.post('users/login', {
       username: payload.username,
       password: payload.password
     })
     .then(response => {
       console.log('this is login response  ', response.data.token)
       localStorage.setItem('token', response.data.token)
-      axios.get('http://localhost:3000/users/info', {
+      vue.prototype.$http.get('users/info', {
         headers: {
           token: response.data.token
         }
@@ -328,7 +333,7 @@ const actions = {
     })
   },
   signup ({ commit }, payload) {
-    axios.post('http://localhost:3000/users', {
+    vue.prototype.$http.post('users', {
       username: payload.username,
       password: payload.password,
       email: payload.email
@@ -349,7 +354,7 @@ const actions = {
     // ambil token dari localstorage
     // verify kebelakang ke users/info, dapet data user, lempar ke state
     // if localStorage.token ada
-    axios.get('http://localhost:3000/users/info', {
+    vue.prototype.$http.get('users/info', {
       headers: {
         token: localStorage.token
       }
